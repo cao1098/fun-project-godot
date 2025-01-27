@@ -4,7 +4,7 @@ extends EditorInspectorPlugin
 # Plugin Script
 # Adds generator button and clear button to create and clear tiles in the editor
 
-var generator_scene = preload("C:/Users/clair/OneDrive/Documents/fun_project/DungeonGenerator/DungeonGeneratorNode.tscn") #preload scene that generates tiles
+var generator_scene = preload("C:/Users/clair/OneDrive/Documents/fun_project/fun-project-godot/DungeonGenerator/DungeonGeneratorNode.tscn") #preload scene that generates tiles
 
 # Check if node is DungeonGenerator
 func _can_handle(object):
