@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 [Tool]
 // Dungeon Generator Node
 // Calls functions to create rooms, paths, and draw tiles
@@ -10,28 +11,43 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 	[Export] private int dungeonWidth;
 	[Export] private int minRoomWidth;
 	[Export] private int minRoomHeight;
+	[Export] private int rows;
+	[Export] private int cols;
 
 	public override void _Ready()
 	{
-		//generateDungeon(); //NOTE: currently for C# testing, remove for plugin testing
+		/*dungeonHeight = 100;
+		dungeonWidth = 100;
+		minRoomWidth = 10;
+		minRoomHeight = 10;
+		generateDungeon(); //NOTE: currently for C# testing, remove for plugin testing*/
 	}
 
 	//Create dungeon
 	protected override void generateDungeon(){
-		//Generate all rooms
 		RoomGenerator roomGenerator = new RoomGenerator();
-		var roomArray = new Godot.Collections.Array<Rect2I>(roomGenerator.createRooms(100, 100, 34, 34));
+		PathGenerator pathGenerator = new PathGenerator();
+		Random r = new Random();
 
+		//Generate all rooms
+		List<Rect2I> roomList = new List<Rect2I>(roomGenerator.createRooms(dungeonWidth, dungeonHeight, minRoomWidth, minRoomHeight, r, cols, rows));
+		
 		//Generate all paths
+		HashSet<Vector2I> paths = pathGenerator.createPaths(roomList, cols, rows);
 
-		//Draw tiles
+		// Convert lists to arrays
+		var roomArray = new Godot.Collections.Array<Rect2I>(roomList);
+		var pathArray = new Godot.Collections.Array<Vector2I>(paths);
+
+		// Draw dungeon
 		var tileMapLayerNode = GetNode("TileMapLayer");
-		//CREATE FLOOR GENERATOR, floor generator will convert lists to godot arrays
-		tileMapLayerNode.Call("drawTiles", roomArray);
+
+		tileMapLayerNode.Call("drawRooms", roomArray);
+		tileMapLayerNode.Call("drawPaths", pathArray);
 	}
 
-	//Clear dungeon
-	public void clearDungeon(){
+    //Clear dungeon
+    public void clearDungeon(){
 		var tileMapLayerNode = GetNode("TileMapLayer");
 		tileMapLayerNode.Call("clearTiles");
 	}

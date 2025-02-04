@@ -1,15 +1,11 @@
 @tool
 extends EditorPlugin
 
-# Creates the plugin
-
-var plugin = preload("C:/Users/clair/OneDrive/Documents/fun_project/fun-project-godot/addons/inspector_plugin/plugin_button.gd")
-
+var plugin
 
 func _enter_tree():
-	plugin = plugin.new()
-	add_inspector_plugin(plugin)
-
+    plugin = preload("res://addons/inspector_plugin/plugin_button.gd").new()
+    add_inspector_plugin(plugin)
 
 func _exit_tree():
-	remove_inspector_plugin(plugin)
+    remove_inspector_plugin(plugin)
