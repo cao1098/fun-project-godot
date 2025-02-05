@@ -5,10 +5,21 @@ using System.Collections.Generic;
 // Create the rooms of the dungeon
 public partial class RoomGenerator 
 {
-	public List<Rect2I> createRooms(int dungeonWidth, int dungeonHeight, int minRoomWidth, int minRoomHeight, Random r, int cols, int rows){
+	public List<Rect2I> createRooms(int dungeonWidth, int dungeonHeight, int minRoomWidth, int minRoomHeight, Random r, int cols, int rows, float density){
 		// Calculate size of each sector
 		int sectorWidth = dungeonWidth/cols; 
 		int sectorHeight = dungeonHeight/rows; 
+
+		// Guranteed rooms
+		(int, int) gurantee1 = (r.Next( 0, rows), r.Next(0, cols));
+		(int, int) gurantee2 = (r.Next(0, rows), r.Next(0, cols));
+		if(gurantee2 == gurantee1){
+			if(gurantee1 == (0,0)){
+				gurantee2 = (r.Next(1, rows), r.Next(1, cols));
+			}else{
+				gurantee2 = (0, 0);
+			}
+		}
 
 		List<Rect2I> roomList = new List<Rect2I>();
 		for(int i = 0; i < rows; i++){
@@ -17,26 +28,36 @@ public partial class RoomGenerator
 				Vector2I position = new Vector2I(j * sectorWidth, i * sectorHeight);
 				Rect2I sector = new Rect2I(position, new Vector2I(sectorWidth, sectorHeight));
 
-				// Determine dimensions (2 : 3 ratio)
-				bool longerWidth = r.Next(0, 2) == 1; // 1 for longer width, 0 for longer height
-				if(longerWidth){
-					int roomWidth = r.Next(minRoomWidth, Math.Min(3*sectorHeight/2, sectorWidth));
-					int roomHeight = roomWidth/3 * 2;
+				// Decide to generate
+				if(r.NextSingle() <= density || (i, j) == gurantee1 || (i, j) == gurantee2){
+					// Determine dimensions (2 : 3 ratio)
+					bool longerWidth = r.Next(0, 2) == 1; // 1 for longer width, 0 for longer height
+					if(longerWidth){
+						int roomWidth = r.Next(minRoomWidth, Math.Min(3*sectorHeight/2, sectorWidth));
+						int roomHeight = roomWidth/3 * 2;
 
-					int xPosition = r.Next(sector.Position.X, sector.End.X - roomWidth);
-					int yPosition = r.Next(sector.Position.Y, sector.End.Y - roomHeight);
+						int xPosition = r.Next(sector.Position.X, sector.End.X - roomWidth);
+						int yPosition = r.Next(sector.Position.Y, sector.End.Y - roomHeight);
 
-					Rect2I room = new Rect2I(new Vector2I(xPosition, yPosition), new Vector2I(roomWidth, roomHeight));
-					roomList.Add(room);
+						Rect2I room = new Rect2I(new Vector2I(xPosition, yPosition), new Vector2I(roomWidth, roomHeight));
+						roomList.Add(room);
+					}else{
+						int roomHeight = r.Next(minRoomHeight, Math.Min(3*sectorWidth/2, sectorHeight));
+						int roomWidth = roomHeight/3 * 2;
+
+						int xPosition = r.Next(sector.Position.X, sector.End.X - roomWidth);
+						int yPosition = r.Next(sector.Position.Y, sector.End.Y - roomHeight);
+
+						Rect2I room = new Rect2I(new Vector2I(xPosition, yPosition), new Vector2I(roomWidth, roomHeight));
+						roomList.Add(room);
+					}
 				}else{
-					int roomHeight = r.Next(minRoomHeight, Math.Min(3*sectorWidth/2, sectorHeight));
-					int roomWidth = roomHeight/3 * 2;
+					int xPosition = r.Next(sector.Position.X, sector.End.X - 1);
+					int yPosition = r.Next(sector.Position.Y, sector.End.Y - 1);
 
-					int xPosition = r.Next(sector.Position.X, sector.End.X - roomWidth);
-					int yPosition = r.Next(sector.Position.Y, sector.End.Y - roomHeight);
+					Rect2I dummy = new Rect2I(new Vector2I(xPosition, yPosition), new Vector2I(1, 1));
+					roomList.Add(dummy);
 
-					Rect2I room = new Rect2I(new Vector2I(xPosition, yPosition), new Vector2I(roomWidth, roomHeight));
-					roomList.Add(room);
 				}
 			}
 		}
