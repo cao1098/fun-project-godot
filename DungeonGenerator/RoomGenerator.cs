@@ -11,13 +11,11 @@ public partial class RoomGenerator
 		int sectorHeight = dungeonHeight/rows; 
 
 		// Guranteed rooms
-		(int, int) gurantee1 = (r.Next( 0, rows), r.Next(0, cols));
+		(int, int) gurantee1 = (r.Next( 0, rows - 1), r.Next(0, cols - 1));
 		(int, int) gurantee2 = (r.Next(0, rows), r.Next(0, cols));
 		if(gurantee2 == gurantee1){
-			if(gurantee1 == (0,0)){
-				gurantee2 = (r.Next(1, rows), r.Next(1, cols));
-			}else{
-				gurantee2 = (0, 0);
+			if(gurantee1 == gurantee2){
+				gurantee2 = (rows - 1, cols - 1);
 			}
 		}
 

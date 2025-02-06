@@ -39,13 +39,13 @@ public partial class PathGenerator
     {
 			int step = startPoint.Y <= endPoint.Y  ? 1 : -1;
 			for(int y = startPoint.Y; y != endPoint.Y; y += step){
-				Vector2I pos = new Vector2I(endPoint.X, y);
+				Vector2I pos = new Vector2I(startPoint.X, y);
 				paths.Add(pos);
 			}
 			
 			step = startPoint.X <= endPoint.X ? 1 : -1;
       for(int x = startPoint.X; x != endPoint.X; x += step){
-				Vector2I pos = new Vector2I(x, startPoint.Y);
+				Vector2I pos = new Vector2I(x, endPoint.Y);
 				paths.Add(pos);
 			}
 
