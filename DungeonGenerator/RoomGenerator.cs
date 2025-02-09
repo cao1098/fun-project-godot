@@ -2,10 +2,15 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+
+
 // Create the rooms of the dungeon
 public partial class RoomGenerator 
 {
-	public List<Rect2I> createRooms(int dungeonWidth, int dungeonHeight, int minRoomWidth, int minRoomHeight, Random r, int cols, int rows, float density){
+
+	const int minRoomHeight = 5;
+	const int minRoomWidth = 5;
+	public List<Rect2I> createRooms(int dungeonWidth, int dungeonHeight, Random r, int cols, int rows, float density){
 		// Calculate size of each sector
 		int sectorWidth = dungeonWidth/cols; 
 		int sectorHeight = dungeonHeight/rows; 

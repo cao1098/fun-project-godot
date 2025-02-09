@@ -9,8 +9,6 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 {
 	[Export] private int dungeonHeight;
 	[Export] private int dungeonWidth;
-	[Export] private int minRoomWidth;
-	[Export] private int minRoomHeight;
 	[Export] private int rows;
 	[Export] private int cols;
 	[Export] private float density;
@@ -31,7 +29,7 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		Random r = new Random();
 
 		//Generate all rooms
-		List<Rect2I> roomList = new List<Rect2I>(roomGenerator.createRooms(dungeonWidth, dungeonHeight, minRoomWidth, minRoomHeight, r, cols, rows, density));
+		List<Rect2I> roomList = new List<Rect2I>(roomGenerator.createRooms(dungeonWidth, dungeonHeight, r, cols, rows, density));
 		
 		//Generate all paths
 		HashSet<Vector2I> paths = pathGenerator.createPaths(roomList, cols, rows);

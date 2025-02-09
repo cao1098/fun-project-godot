@@ -37,15 +37,15 @@ public partial class PathGenerator
 
     private HashSet<Vector2I> connectRooms(HashSet<Vector2I> paths, Vector2I startPoint, Vector2I endPoint)
     {
-			int step = startPoint.Y <= endPoint.Y  ? 1 : -1;
-			for(int y = startPoint.Y; y != endPoint.Y; y += step){
-				Vector2I pos = new Vector2I(startPoint.X, y);
+			int step = startPoint.X <= endPoint.X ? 1 : -1;
+      for(int x = startPoint.X; x != endPoint.X; x += step){
+				Vector2I pos = new Vector2I(x, startPoint.Y);
 				paths.Add(pos);
 			}
-			
-			step = startPoint.X <= endPoint.X ? 1 : -1;
-      for(int x = startPoint.X; x != endPoint.X; x += step){
-				Vector2I pos = new Vector2I(x, endPoint.Y);
+
+			step = startPoint.Y <= endPoint.Y  ? 1 : -1;
+			for(int y = startPoint.Y; y != endPoint.Y; y += step){
+				Vector2I pos = new Vector2I(endPoint.X, y);
 				paths.Add(pos);
 			}
 
