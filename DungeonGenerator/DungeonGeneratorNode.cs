@@ -29,21 +29,20 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		Random r = new Random();
 
 		//Generate all rooms
-		Rect2I?[,] roomArray = (roomGenerator.createRooms(dungeonWidth, dungeonHeight, r, cols, rows, density));
+		Rect2I?[,] roomArray = roomGenerator.createRooms(dungeonWidth, dungeonHeight, r, cols, rows, density);
 		
 		//Generate all paths
-		//HashSet<Vector2I> paths = pathGenerator.createPaths(roomList, cols, rows);
+		HashSet<Vector2I> paths = pathGenerator.createPaths(roomArray, cols, rows);
 
-		// Convert lists to arrays
+		// Convert to Godot Arrays
 		var godotRoomArray = new Godot.Collections.Array<Rect2I>(roomArray.Cast<Rect2I>().ToArray());
-		
-		//var pathArray = new Godot.Collections.Array<Vector2I>(paths);
+		var pathArray = new Godot.Collections.Array<Vector2I>(paths);
 
 		// Draw dungeon
 		var tileMapLayerNode = GetNode("TileMapLayer");
 
 		tileMapLayerNode.Call("drawRooms", godotRoomArray);
-		//tileMapLayerNode.Call("drawPaths", pathArray);
+		tileMapLayerNode.Call("drawPaths", pathArray);
 	}
 
     //Clear dungeon

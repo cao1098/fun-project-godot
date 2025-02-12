@@ -167,4 +167,22 @@ public partial class RoomGenerator
 
 		return room;
 	}
+
+	public Rect2I?[,] createTestRooms(int dungeonWidth, int dungeonHeight, Random r, int cols, int rows, float density){
+		Rect2I?[,] roomArray = new Rect2I?[rows, cols];
+		
+		int sectorWidth = dungeonWidth/cols; 
+		int sectorHeight = dungeonHeight/rows; 
+
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
+				Vector2I position = new Vector2I(j * sectorWidth, i * sectorHeight);
+				Rect2I sector = new Rect2I(position, new Vector2I(sectorWidth, sectorHeight));
+				roomArray[i, j] = new Rect2I(sector.GetCenter(), new Vector2I(sectorWidth/2, sectorHeight/2));
+			}
+		}
+
+		return roomArray;
+	}
+	
 }
