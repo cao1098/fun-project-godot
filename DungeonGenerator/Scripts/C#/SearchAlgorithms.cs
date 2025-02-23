@@ -1,15 +1,67 @@
 using Godot;
 using System;
+using RoomClass;
+using System.Collections.Generic;
+using System.Linq;
 
 public partial class SearchAlgorithms
 {
-  public void BFS(){
+  public void BFS(int rows, int cols, Room[,] roomArray, (int, int) startRoom, Dictionary<string, int> roomCounts){
+		Queue<Room> Q = new Queue<Room>();
+		bool[,] visited = new bool[rows, cols];
 
+		Q.Enqueue(roomArray[startRoom.Item1, startRoom.Item2]);
+		visited[startRoom.Item1, startRoom.Item2] = true;
+
+		int currAccesibleRooms = 0;
+
+		while(Q.Count > 0){
+			Room curr = Q.Dequeue();
+			GD.Print("CURR: " + curr.sectorId);
+			List<Room> neighbors = getNeighbors(curr, roomArray, rows, cols);
+
+			bool hasAccessibleNeighbor = false;
+			foreach(Room room in neighbors){
+				if(!visited[room.sectorId.Item1, room.sectorId.Item2] && room.type != RoomType.NULL){
+					visited[room.sectorId.Item1, room.sectorId.Item2] = true;
+					Q.Enqueue(room);
+					hasAccessibleNeighbor = true;
+					currAccesibleRooms++;
+				}
+			}
+			if(!hasAccessibleNeighbor && Q.Count == 0 && currAccesibleRooms != (roomCounts["MECH"] + roomCounts["DUMMY"])){
+				//Q.Enqueue(curr);
+				GD.Print("DEAD END");
+			}
+			GD.Print("");
+		}
   }
 
   public void DFS(){
     
   }
+
+	private List<Room> getNeighbors(Room room, Room[,] roomArray, int rows, int cols){
+		List<Room> neighbors = new List<Room>();
+		// Check UP
+		if(room.sectorId.Item1 != 0){
+			neighbors.Add(roomArray[room.sectorId.Item1 - 1, room.sectorId.Item2]);
+		}
+		// Check DOWN
+		if(room.sectorId.Item1 != rows - 1){
+			neighbors.Add(roomArray[room.sectorId.Item1 + 1, room.sectorId.Item2]);
+		}
+		// Check LEFT
+		if(room.sectorId.Item2 != 0){
+			neighbors.Add(roomArray[room.sectorId.Item1, room.sectorId.Item2 - 1]);
+		}
+		// Check RIGHT
+		if(room.sectorId.Item2 != cols - 1){
+			neighbors.Add(roomArray[room.sectorId.Item1, room.sectorId.Item2 + 1]);
+		}
+
+		return neighbors;
+	}
 
   /* NOTES/OLD CODE FROM ROOM GENERATOR
   	// Check/create connections such that all MECH rooms are strongly connected

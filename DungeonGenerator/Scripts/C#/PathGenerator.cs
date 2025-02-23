@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using RoomClass;
 // TODO
 // Create an x% chance for a path to generate, below or right
 // Create a checking system to check if all rooms are connected, rooms w/ a size of 0x0 should not be considered

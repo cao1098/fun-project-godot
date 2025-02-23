@@ -1,38 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-
-// Possible Room types
-public enum RoomType{
-	MECH,
-	HOLLOW,
-	DUMMY,
-	NULL
-}
-
-// Room Class represents occupied sector in grid
-public partial class Room : Resource {
-	public Rect2I dimensions;
-	public RoomType type;
-	public (int, int) sectorId;
-	public Rect2I sector;
-	public bool isMerged;
-	public Room(Rect2I dimensions, RoomType type, (int, int) sectorId, Rect2I sector){
-		this.dimensions = dimensions;
-		this.type = type;
-		this.sectorId = sectorId;
-		this.sector = sector;
-		isMerged = false;
-	}
-	public string typeToString()
-	{
-		return type.ToString();
-	}
-	public override string ToString(){
-		return "Dimensions: " + dimensions + " Type: " + type + " Id: " + sectorId + " sector: " + sector + " merged: " + isMerged;
-	}
-}
+using RoomClass;
 
 // Create the rooms of the dungeon
 public partial class RoomGenerator 
@@ -52,6 +21,7 @@ public partial class RoomGenerator
 			["NULL"] = 0,
 			["HOLLOW"] = 0
 		};
+		(int, int) startRoom = (-1, -1);
 
 		// Generate a room for each sector
 		for(int i = 0; i < rows; i++){
@@ -71,6 +41,7 @@ public partial class RoomGenerator
 					if(room.type == RoomType.MECH) roomCounts["MECH"]++;
 					if(room.type == RoomType.DUMMY || room.isMerged) roomCounts["DUMMY"]++;
 					if(room.type == RoomType.NULL) roomCounts["NULL"]++;
+					if(startRoom == (-1 , -1)) startRoom = (i, j);
 				}
 			}
 		}
@@ -82,6 +53,10 @@ public partial class RoomGenerator
 		}
 
 		// Check that all MECH rooms can be connected
+		checkRoomConnectivity(startRoom, rows, cols, roomArray, roomCounts);
+
+		// Create HOLLOWS
+		createHollowRooms();
 
 		return roomArray;
 	}
@@ -236,5 +211,17 @@ public partial class RoomGenerator
 			roomArray[roomId.Item1, roomId.Item2] = room;
 			roomCount["MECH"]++;
 		}
+	}
+
+	private void checkRoomConnectivity((int, int) startRoom, int rows, int cols, Room[,] roomArray, Dictionary<string, int> roomCounts){
+		SearchAlgorithms searchAlgorithms = new SearchAlgorithms();
+    searchAlgorithms.BFS(rows, cols, roomArray, startRoom, roomCounts);
+		// given a room array
+		// run BFS on it
+		// take the path and convert any null rooms to dummys
+	}
+
+	private void createHollowRooms(){
+
 	}
 }

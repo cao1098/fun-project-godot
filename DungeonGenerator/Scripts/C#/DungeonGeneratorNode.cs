@@ -1,6 +1,6 @@
 using Godot;
 using System;
-using System.Collections.Generic;
+using RoomClass;
 using System.Linq;
 [Tool]
 // Dungeon Generator Node
@@ -21,16 +21,19 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		density = 0;
 		dummy = 0;
 		generateDungeon(); //NOTE: currently for C# testing, remove for plugin testing*/
+		generateDungeon();
 	}
 
 	//Create dungeon
 	protected override void generateDungeon(){
 		RoomGenerator roomGenerator = new RoomGenerator();
 		PathGenerator pathGenerator = new PathGenerator();
+		TestData testData = new TestData();
 		Random r = new Random();
 
 		//Generate all rooms
-		Room[,] roomArray = roomGenerator.createDungeonRooms(dungeonWidth, dungeonHeight, r, cols, rows, density, dummy);
+		//Room[,] roomArray = roomGenerator.createDungeonRooms(dungeonWidth, dungeonHeight, r, cols, rows, density, dummy);
+		Room[,] roomArray = testData.createTestData();
 		
 		//Generate all paths
 		//HashSet<Vector2I> paths = pathGenerator.createPaths(roomArray, cols, rows);
