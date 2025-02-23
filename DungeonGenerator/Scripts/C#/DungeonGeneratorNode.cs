@@ -12,13 +12,14 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 	[Export] private int rows;
 	[Export] private int cols;
 	[Export] private float density;
+	[Export] private float dummy;
 
 	public override void _Ready()
 	{
 		/*dungeonHeight = 100;
 		dungeonWidth = 100;
-		minRoomWidth = 10;
-		minRoomHeight = 10;
+		density = 0;
+		dummy = 0;
 		generateDungeon(); //NOTE: currently for C# testing, remove for plugin testing*/
 	}
 
@@ -29,20 +30,20 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		Random r = new Random();
 
 		//Generate all rooms
-		Rect2I?[,] roomArray = roomGenerator.createRooms(dungeonWidth, dungeonHeight, r, cols, rows, density);
+		Room[,] roomArray = roomGenerator.createDungeonRooms(dungeonWidth, dungeonHeight, r, cols, rows, density, dummy);
 		
 		//Generate all paths
-		HashSet<Vector2I> paths = pathGenerator.createPaths(roomArray, cols, rows);
+		//HashSet<Vector2I> paths = pathGenerator.createPaths(roomArray, cols, rows);
 
 		// Convert to Godot Arrays
-		var godotRoomArray = new Godot.Collections.Array<Rect2I>(roomArray.Cast<Rect2I>().ToArray());
-		var pathArray = new Godot.Collections.Array<Vector2I>(paths);
+		var godotRoomArray = new Godot.Collections.Array<Room>(roomArray.Cast<Room>().ToArray());
+		//var pathArray = new Godot.Collections.Array<Vector2I>(paths);
 
 		// Draw dungeon
 		var tileMapLayerNode = GetNode("TileMapLayer");
 
 		tileMapLayerNode.Call("drawRooms", godotRoomArray);
-		tileMapLayerNode.Call("drawPaths", pathArray);
+		//tileMapLayerNode.Call("drawPaths", pathArray);
 	}
 
     //Clear dungeon

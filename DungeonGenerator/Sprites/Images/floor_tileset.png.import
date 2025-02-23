@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://kbyxlpyrqau7"
-path="res://.godot/imported/icon.svg-0fa66ff87c06ea5c56add5585c3aab6c.ctex"
+uid="uid://xcsy5trjbqte"
+path="res://.godot/imported/floor_tileset.png-661088d3f76a76fc554ef64c6ddb6a43.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://DungeonGenerator/icon.svg"
-dest_files=["res://.godot/imported/icon.svg-0fa66ff87c06ea5c56add5585c3aab6c.ctex"]
+source_file="res://DungeonGenerator/Sprites/Images/floor_tileset.png"
+dest_files=["res://.godot/imported/floor_tileset.png-661088d3f76a76fc554ef64c6ddb6a43.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

@@ -24,6 +24,10 @@ window/size/viewport_height=800
 
 project/assembly_name="fun_project"
 
+[editor]
+
+run/main_run_args="--verbose"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/inspector_plugin/plugin.cfg")
