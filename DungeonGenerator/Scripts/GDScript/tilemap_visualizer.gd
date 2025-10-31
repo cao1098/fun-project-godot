@@ -11,16 +11,10 @@ func drawRooms(roomList) -> void:
 	for room in roomList:
 		for i in range(room.dimensions.position.y, room.dimensions.end.y):
 			for j in range(room.dimensions.position.x, room.dimensions.end.x):
-				if(room.typeToString() == "MECH" or room.typeToString() == "DUMMY"):
-					if(i + j) % 2 == 0:
-						set_cell(Vector2i(j,i), 0, Vector2i(0,0))
-					else:
-						set_cell(Vector2i(j,i), 0, Vector2i(8,0))
+				if(i + j) % 2 == 0:
+					set_cell(Vector2i(j,i), 0, Vector2i(0,4))
 				else:
-					if(i + j) % 2 == 0:
-						set_cell(Vector2i(j,i), 0, Vector2i(0,4))
-					else:
-						set_cell(Vector2i(j,i), 0, Vector2i(8,4))
+					set_cell(Vector2i(j,i), 0, Vector2i(8,4))
 
 
 

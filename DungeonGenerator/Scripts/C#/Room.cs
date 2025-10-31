@@ -1,34 +1,30 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace RoomClass{
-  // Possible Room types
-  public enum RoomType{
-    MECH,
-    HOLLOW,
-    DUMMY,
-    NULL
-  }
 
-  // Room Class represents occupied sector in grid
+  // Room Class represents occupied sectorDimensions in grid
   public partial class Room : Resource {
     public Rect2I dimensions;
-    public RoomType type;
     public (int, int) sectorId;
-    public Rect2I sector;
+    public (int, int)? mergeSectorId;
     public bool isMerged;
-    public Room(Rect2I dimensions, RoomType type, (int, int) sectorId, Rect2I sector){
-      this.dimensions = dimensions;
-      this.type = type;
-      this.sectorId = sectorId;
-      this.sector = sector;
-      isMerged = false;
-    }
-    public string typeToString()
+    public bool isAnchor;
+
+    // Godot instantiation
+    public Room() { }
+    
+    public Room((int, int) sectorId, (int, int)? mergeSectorId, Rect2I dimensions, bool isMerged = false, bool isAnchor = false)
     {
-      return type.ToString();
+      this.dimensions = dimensions;
+      this.sectorId = sectorId;
+      this.mergeSectorId = mergeSectorId;
+      this.isMerged = isMerged;
     }
     public override string ToString(){
-      return "Dimensions: " + dimensions + " Type: " + type + " Id: " + sectorId + " sector: " + sector + " merged: " + isMerged;
+      return "Dimensions: " + dimensions + " Id: " + sectorId + " Merged: " + isMerged + " MergedId: " + mergeSectorId;
     }
   }
 }
