@@ -14,14 +14,15 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 	[Export] private int cols;
 	[Export] private double roomDensity;
 	[Export] private double anchorDensity;
+	[Export] private double mergeChance;
 
 	public override void _Ready()
 	{
 		/*dungeonHeight = 100;
 		dungeonWidth = 100;
-		density = 0;
-		dummy = 0;
-		generateDungeon(); //NOTE: currently for C# testing, remove for plugin testing*/
+		roomDensity = 0.1;
+		anchorDensity = 0;
+		mergeChance = 0;*/
 		generateDungeon();
 	}
 
@@ -36,10 +37,10 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		Room[,] dungeonArray = new Room[rows, cols];
 
 		//Generate all rooms in the dungeon and get number of generated rooms
-		dungeonArray = roomGenerator.createDungeonRooms(dungeonArray, r, roomDensity);
+		dungeonArray = roomGenerator.createDungeonRooms(dungeonArray, r, roomDensity, mergeChance);
 
 		// Create list of all rooms
-		List<Room> roomList = dungeonArray.Cast<Room>().Where(r => r != null).DistinctBy(r => r.sectorId).ToList();
+		List<Room> roomList = dungeonArray.Cast<Room>().Where(r => r.dimensions.Size != Vector2I.Zero).DistinctBy(r => r.sectorId).ToList();
 
 		//Generate all paths
 		HashSet<Vector2I> paths = pathGenerator.createPaths(dungeonArray, r, roomList);

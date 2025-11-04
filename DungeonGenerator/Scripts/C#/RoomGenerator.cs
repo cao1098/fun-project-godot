@@ -12,10 +12,8 @@ public partial class RoomGenerator
 	public int dungeonHeight;
 	const int minRoomHeight = 4;
 	const int minRoomWidth = 4;
-	const double mergeChance = 0.05;
-
-	//*
-	// scrapping the rooms have adjacency list idea, just pass in the dungeon layout and roomcount, filter out the rooms later, everything else can be treated as paths.*/
+	//const double mergeChance = 0.05;
+	
 
 
 	public RoomGenerator(int dungeonWidth, int dungeonHeight)
@@ -24,7 +22,7 @@ public partial class RoomGenerator
 		this.dungeonHeight = dungeonHeight;
 	}
 
-	public Room[,] createDungeonRooms(Room[,] dungeonArray, Random r, double roomDensity)
+	public Room[,] createDungeonRooms(Room[,] dungeonArray, Random r, double roomDensity, double mergeChance)
 	{
 		// Get rows and cols from dungeonArray
 		int rows = dungeonArray.GetLength(0);
@@ -33,14 +31,14 @@ public partial class RoomGenerator
 		// Keep track of iterations & roomCount
 		int iterations = 0;
 
-		dungeonArray = generateRooms(rows, cols, r, dungeonArray, iterations, roomDensity);
+		dungeonArray = generateRooms(rows, cols, r, dungeonArray, iterations, roomDensity, mergeChance);
 
-		//printRooms(dungeonArray);
+		printRooms(dungeonArray);
 
 		return dungeonArray;
 	}
 
-	public Room[,] generateRooms(int rows, int cols, Random r, Room[,] dungeonArray, int iterations, double roomDensity)
+	public Room[,] generateRooms(int rows, int cols, Random r, Room[,] dungeonArray, int iterations, double roomDensity, double mergeChance)
 	{
 		// Keep track of # of generated rooms
 		roomCount = 0;
@@ -61,29 +59,34 @@ public partial class RoomGenerator
 				Room room = createRoom(sector, i, j, r, roomDensity);
 				dungeonArray[i, j] = room;
 
-				if (room != null) roomCount++;
+				if (room.dimensions.Size != Vector2I.Zero) roomCount++;
 			}
 		}
 
 		// Determine if layout is eligible for merging or if it needs to be reworked
 		if (roomCount > 2)
 		{
-			roomMerging(rows, cols, r, dungeonArray);
+			roomMerging(rows, cols, r, dungeonArray, mergeChance);
 		}
 		else if (roomCount < 2)
 		{
 			if (iterations < 10)
 			{
-				dungeonArray = generateRooms(rows, cols, r, new Room[rows, cols], ++iterations, roomDensity);
+				dungeonArray = generateRooms(rows, cols, r, new Room[rows, cols], ++iterations, roomDensity, mergeChance);
 			}
 			else
 			{
-				// make this one big room i suppose, but its good for now, keeps it from erroring
 				dungeonArray = new Room[rows, cols];
 				Rect2I sector1 = new Rect2I(new Vector2I(0 * sectorWidth, 0 * sectorHeight), new Vector2I(sectorWidth, sectorHeight));
-				Rect2I sector2 = new Rect2I(new Vector2I((cols - 1) * sectorWidth, (rows - 1) * sectorHeight), new Vector2I(sectorWidth, sectorHeight));
-				dungeonArray[0, 0] = new Room((0, 0), null, new Rect2I(new Vector2I(sector1.Position.X, sector1.Position.Y), new Vector2I(5, 5)));
-				dungeonArray[rows - 1, cols - 1] = new Room((rows - 1, cols - 1), null, new Rect2I(new Vector2I(sector2.Position.X, sector2.Position.Y), new Vector2I(5, 5)));
+				Room dungeonRoom = new Room((0, 0), null, new Rect2I(new Vector2I(sector1.Position.X, sector1.Position.Y), new Vector2I(dungeonWidth, dungeonHeight)), true);
+				for (int i = 0; i < rows; i++)
+				{
+					for (int j = 0; j < cols; j++)
+					{
+						dungeonArray[i, j] = dungeonRoom;
+					}
+				}
+				roomCount = 1;
 				return dungeonArray;
 
 			}
@@ -91,22 +94,24 @@ public partial class RoomGenerator
 		return dungeonArray;
 	}
 
-	// Creates a room according to the specified parameters
+	// Creates a room according to the specified parameters, empty rooms will be of size 0,0
 	public Room createRoom(Rect2I sector, int i, int j, Random r, double roomDensity)
 	{
-		Room room = null;
+		Room room;
 		if (r.NextDouble() < roomDensity)
 		{
 			room = new Room((i, j), null, new Rect2I(new Vector2I(sector.Position.X, sector.Position.Y), new Vector2I(5, 5)));
 		}
-
-		// would probably better to have empty rooms and anchor rooms, then they can be used for path finding and get filtered out after the fact.
+		else
+    {
+      room = new Room((i, j), null, new Rect2I(new Vector2I(sector.Position.X, sector.Position.Y), new Vector2I(0, 0)));
+    }
 
 		return room;
 	}
 
 	// Iterate through grid and randomly merge adjacent rooms
-	private void roomMerging(int rows, int cols, Random r, Room[,] dungeonArray)
+	private void roomMerging(int rows, int cols, Random r, Room[,] dungeonArray, double mergeChance)
 	{
 		// All potential directions
 		var directions = new (int di, int dj)[] { (-1, 0), (1, 0), (0, -1), (0, 1) };
@@ -114,7 +119,7 @@ public partial class RoomGenerator
 		{
 			for (int j = 0; j < cols; j++)
 			{
-				if (dungeonArray[i, j] == null || r.NextDouble() > mergeChance || dungeonArray[i, j].isMerged)
+				if (dungeonArray[i, j].dimensions.Size == Vector2I.Zero || r.NextDouble() > mergeChance || dungeonArray[i, j].isMerged)
 					continue;
 
 				// Create list of valid directions
@@ -125,7 +130,7 @@ public partial class RoomGenerator
 				// Merge the selected room with the current room, decrease roomCount
 				(int, int) selectedSector = validDirections[r.Next(validDirections.Count)];
 				Room selectedRoom = dungeonArray[selectedSector.Item1, selectedSector.Item2];
-				if (selectedRoom != null && !selectedRoom.isMerged)
+				if (selectedRoom.dimensions.Size != Vector2I.Zero && !selectedRoom.isMerged)
 				{
 					mergeRooms(dungeonArray, dungeonArray[i, j], selectedRoom);
 					roomCount--;
@@ -160,7 +165,7 @@ public partial class RoomGenerator
     // Debugging purposes
 		foreach (Room room in dungeonArray)
 		{
-			if(room != null) GD.Print(room.ToString());
+			GD.Print(room.ToString());
 		}
 		GD.Print("Roomcount: " + roomCount);
   }

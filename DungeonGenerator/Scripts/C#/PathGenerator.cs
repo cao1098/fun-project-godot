@@ -17,33 +17,42 @@ public struct Connection
 	}
 }
 
+
+// connectivity error at higher levels, also fix the random thing
 // Create pathways of dungeon
 public partial class PathGenerator
 {
 	private static readonly List<(int, int)> Directions = new List<(int, int)> { (0, 1), (0, -1), (1, 0), (-1, 0) };
 	public static Random r = new Random();
-	
+
 	public HashSet<Vector2I> createPaths(Room[,] dungeonArray, Random r, List<Room> roomList)
 	{
 		// Set rows and cols
 		int rows = dungeonArray.GetLength(0);
 		int cols = dungeonArray.GetLength(1);
 
-		// paths holds all room connections, later converted to the pathtiles
-		HashSet<Connection> paths = DFS(dungeonArray, rows, cols, roomList, r);
+		// Get number of mandatory rooms
+		int roomCount = roomList.Count;
 
-		// Convert to actual path tiles
+		// Create space to hold all path tiles
 		HashSet<Vector2I> pathTiles = new HashSet<Vector2I>();
-		foreach (Connection path in paths)
+
+		if (roomCount > 1)
 		{
-			//GD.Print(path.roomID + " , " + path.previousID);
-			//pathTiles = connectRooms(pathTiles, dungeonArray[path.roomID.Item1, path.roomID.Item2].dimensions.GetCenter(), dungeonArray[path.previousID.Item1, path.previousID.Item2].dimensions.GetCenter());
-    }
+			// paths holds all room connections, later converted to the pathtiles
+			HashSet<Connection> paths = DFS(dungeonArray, rows, cols, roomList, r, roomCount);
+
+			// Convert to actual path tiles
+			foreach (Connection path in paths)
+			{
+				pathTiles = connectRooms(pathTiles, dungeonArray[path.roomID.Item1, path.roomID.Item2].dimensions.GetCenter(), dungeonArray[path.previousID.Item1, path.previousID.Item2].dimensions.GetCenter());
+			}
+		}
 
 		return pathTiles;
 	}
 
-	public HashSet<Connection> DFS(Room[,] dungeonArray, int rows, int cols, List<Room> roomList, Random r)
+	public HashSet<Connection> DFS(Room[,] dungeonArray, int rows, int cols, List<Room> roomList, Random r, int roomCount)
 	{
 		// Keep track of paths and visited rooms
 		HashSet<Connection> paths = new HashSet<Connection>();
@@ -52,21 +61,17 @@ public partial class PathGenerator
 		// Contains rooms to visit and the id of the room connected prior
 		Stack<(Room, (int, int))> roomStack = new Stack<(Room, (int, int))>();
 		int visitedRooms = 0;
-		int roomCount = roomList.Count;
 
 		// Stack of empty rooms containing empty sectors
 		Stack<(Room, (int, int))> emptyRoomStack = new Stack<(Room, (int, int))>();
 
 		// Identify & push first room
-		if (roomList.Count == 0)
-    {
-			GD.Print("PROBLEM!!!!!!!!!!!!!!!!");
-    }
 		Room first = roomList.First();
 		roomStack.Push((first, first.sectorId));
 
 		while (roomStack.Count > 0 && visitedRooms != roomCount)
 		{
+			GD.Print("Rs:" + roomStack.Count);
 			// Get the newest room & its previous room
 			(Room currRoom, (int, int) prevRoomId) = roomStack.Pop();
 
@@ -75,18 +80,23 @@ public partial class PathGenerator
 
 			if (visited[row, col]) continue;
 
+			if (currRoom.dimensions.Size != Vector2I.Zero) visitedRooms++;
+
 			if (currRoom.sectorId != prevRoomId)
 			{
+				if (currRoom.dimensions.Size == Vector2I.Zero)
+				{
+					dungeonArray[currRoom.sectorId.Item1, currRoom.sectorId.Item2].dimensions.Size = Vector2I.One;
+				}
 				Connection connection = new Connection(currRoom.sectorId, prevRoomId);
 				paths.Add(connection);
 			}
 
 			// Mark room (+ merge if it exists) as visited
-			visitedRooms++;
 			visited[row, col] = true;
 			if (currRoom.isMerged) visited[currRoom.mergeSectorId.Value.Item1, currRoom.mergeSectorId.Value.Item2] = true;
 
-		  // Gather all eligible neighbors and add them to the roomstack
+			// Gather all eligible neighbors and add them to the roomstack
 			List<(Room, (int, int))> possibleNeighbors = getAllPossibleNeighbors(row, col, dungeonArray, visited);
 			if (currRoom.isMerged)
 			{
@@ -95,37 +105,33 @@ public partial class PathGenerator
 			foreach ((Room, (int, int)) neighbor in possibleNeighbors)
 			{
 				// Add neighbor to roomStack if it is a room
-				if (neighbor.Item1.dimensions.Size != new Vector2I(0, 0))
-        {
-          roomStack.Push(neighbor);
-        }
-        else
+				if (neighbor.Item1.dimensions.Size != Vector2I.Zero)
+				{
+					roomStack.Push(neighbor);
+				}
+				else
 				{
 					emptyRoomStack.Push(neighbor);
-        }
-				
-        
-      }
+				}
+
+
+			}
+
+
 
 			// Hit a dead end and have no other neighbors to use
 			if (roomStack.Count <= 0 && visitedRooms < roomCount)
 			{
-				// before you start digging in the empty room stack, check your immediate adjacent neighbors for emptys to use, empty room stack should be used for dead dead end
-				GD.Print("uh oh");
 				(Room empty, (int, int) emptyPrevId) = emptyRoomStack.Pop();
 				roomStack.Push((empty, emptyPrevId));
-				
-      }
-
-			// if rooms have been added to stack, set previous, otherwise dont set previous
-			// if the stack is empty and we still have rooms to visit, select a 
+			}
 
 		}
 		GD.Print("visited: " + visitedRooms + " rc: " + roomCount);
 		return paths;
 	}
 
-	private List<(Room, (int, int))> getAllPossibleNeighbors (int baseRow, int baseCol, Room[,] dungeonArray, bool[,] visited)
+	private List<(Room, (int, int))> getAllPossibleNeighbors(int baseRow, int baseCol, Room[,] dungeonArray, bool[,] visited)
 	{
 		List<(Room, (int, int))> possibleNeighbors = new List<(Room, (int, int))>();
 
@@ -139,21 +145,12 @@ public partial class PathGenerator
 			if (!inBounds(dirow, dicol, dungeonArray)) continue;
 			Room neighbor = dungeonArray[dirow, dicol];
 			if (visited[dirow, dicol]) continue;
-			if (neighbor == null)
-			{
-				// Create an empty room
-				Room empty = new Room((dirow, dicol), null, new Rect2I(new Vector2I(), new Vector2I(0, 0)), false);
-        possibleNeighbors.Add((empty, (baseRow, baseCol)));
-      }
-			else
-      {
-        possibleNeighbors.Add((neighbor, (baseRow, baseCol)));
-      }
-			
-			
+			possibleNeighbors.Add((neighbor, (baseRow, baseCol)));
+
+
 		}
 		return possibleNeighbors;
-  }
+	}
 
 	private HashSet<Vector2I> connectRooms(HashSet<Vector2I> paths, Vector2I startPoint, Vector2I endPoint)
 	{
@@ -173,8 +170,8 @@ public partial class PathGenerator
 
 		return paths;
 	}
-	
+
 	private bool inBounds(int r, int c, Room[,] arr) =>
-    r >= 0 && r < arr.GetLength(0) && c >= 0 && c < arr.GetLength(1);
+		r >= 0 && r < arr.GetLength(0) && c >= 0 && c < arr.GetLength(1);
 
 }
