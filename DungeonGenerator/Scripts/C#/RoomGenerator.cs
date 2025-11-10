@@ -32,6 +32,7 @@ public partial class RoomGenerator
 		int iterations = 0;
 
 		dungeonArray = generateRooms(rows, cols, r, dungeonArray, iterations, roomDensity, mergeChance);
+		
 
 		printRooms(dungeonArray);
 
@@ -104,7 +105,7 @@ public partial class RoomGenerator
 		}
 		else
     {
-      room = new Room((i, j), null, new Rect2I(new Vector2I(sector.Position.X, sector.Position.Y), new Vector2I(0, 0)));
+      room = new Room((i, j), null, new Rect2I(new Vector2I(sector.Position.X, sector.Position.Y), Vector2I.Zero));
     }
 
 		return room;

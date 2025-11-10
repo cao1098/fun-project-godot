@@ -39,6 +39,8 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		//Generate all rooms in the dungeon and get number of generated rooms
 		dungeonArray = roomGenerator.createDungeonRooms(dungeonArray, r, roomDensity, mergeChance);
 
+		//dungeonArray = generateMock(dungeonArray);
+
 		// Create list of all rooms
 		List<Room> roomList = dungeonArray.Cast<Room>().Where(r => r.dimensions.Size != Vector2I.Zero).DistinctBy(r => r.sectorId).ToList();
 
@@ -56,8 +58,33 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		tileMapLayerNode.Call("drawPaths", pathArray);
 	}
 
-    //Clear dungeon
-    public void clearDungeon(){
+  private Room[,] generateMock(Room[,] dungeonArray)
+	{
+		int sectorWidth = dungeonWidth / cols;
+		int sectorHeight = dungeonHeight / rows;
+
+		for (int i = 0; i < rows; i++)
+		{
+			for (int j = 0; j < cols; j++)
+			{
+				Rect2I sector = new Rect2I(new Vector2I(j * sectorWidth, i * sectorHeight), new Vector2I(sectorWidth, sectorHeight));
+				dungeonArray[i, j] = new Room((i, j), null, new Rect2I(new Vector2I(sector.Position.X, sector.Position.Y), new Vector2I(5, 5)));
+			}
+		}
+		dungeonArray[0, 0].dimensions.Size = Vector2I.Zero;
+		dungeonArray[0, 2].dimensions.Size = Vector2I.Zero;
+		//dungeonArray[1, 1].dimensions.Size = Vector2I.Zero;
+		dungeonArray[1, 2].dimensions.Size = Vector2I.Zero;
+		dungeonArray[2, 3].dimensions.Size = Vector2I.Zero;
+		dungeonArray[3, 3].dimensions.Size = Vector2I.Zero;
+		
+
+
+		return dungeonArray;
+  }
+
+  //Clear dungeon
+  public void clearDungeon(){
 		var tileMapLayerNode = GetNode("TileMapLayer");
 		tileMapLayerNode.Call("clearTiles");
 	}
