@@ -12,6 +12,7 @@ namespace RoomClass{
     public (int, int)? mergeSectorId;
     public bool isMerged;
     public bool isAnchor;
+    public HashSet<(int, int)> connections;
 
     // Godot instantiation
     public Room() { }
@@ -22,6 +23,7 @@ namespace RoomClass{
       this.sectorId = sectorId;
       this.mergeSectorId = mergeSectorId;
       this.isMerged = isMerged;
+      connections = new HashSet<(int, int)> ();
     }
     public override string ToString(){
       return "Dimensions: " + dimensions + " Id: " + sectorId + " Merged: " + isMerged + " MergedId: " + mergeSectorId;
