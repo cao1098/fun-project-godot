@@ -19,6 +19,7 @@ public struct Connection
 
 // edge graph where each [i,j] has a hashset of rooms its connected to
 
+// if you get lost in space stop looping and just search
 
 // connectivity error at higher levels, also fix the random thing
 // Create pathways of dungeon
@@ -66,27 +67,52 @@ public partial class PathGenerator
 
 		// Contains rooms to visit and the id of the room connected prior
 		Stack<(Room, (int, int))> roomStack = new Stack<(Room, (int, int))>();
-		int visitedRooms = 0;
+		Stack<(Room, (int, int))> backupStack = new Stack<(Room, (int, int))>();
+		int visitedRooms = 1;
 
 		// Identify & push first room
-		//Room first = roomList[r.Next(roomList.Count)];
-		Room first = roomList[4];
+		Room first = roomList[r.Next(roomList.Count)];
+		//Room first = roomList[3];
 		roomStack.Push((first, first.sectorId));
 		visited[first.sectorId.Item1, first.sectorId.Item2] = true;
 		if (first.isMerged)
-    {
-      visited[first.mergeSectorId.Value.Item1, first.mergeSectorId.Value.Item2] = true;
-    }
-
-		while (roomStack.Count > 0 && visitedRooms != roomCount)
 		{
-			(Room currRoom, (int, int) prevRoomId) = roomStack.Pop();
+			visited[first.mergeSectorId.Value.Item1, first.mergeSectorId.Value.Item2] = true;
+		}
+
+		while ((roomStack.Count + backupStack.Count) > 0 && visitedRooms != roomCount)
+		{
+			Room currRoom;
+			(int, int) prevRoomId;
+			if (roomStack.Count == 0)
+			{
+
+				(currRoom, prevRoomId) = backupStack.Pop();
+				GD.Print("USING BACKUP: " + currRoom.sectorId);
+			}
+			else
+			{
+				(currRoom, prevRoomId) = roomStack.Pop();
+				GD.Print("USING STACK: " + currRoom.sectorId);
+			}
+
+			//GD.Print("Current Room: " + currRoom.sectorId);
 
 			int row = currRoom.sectorId.Item1;
 			int col = currRoom.sectorId.Item2;
 
-			if (currRoom.dimensions.Size != Vector2I.Zero) visitedRooms++;
-			if (currRoom.isMerged) GD.Print("Curr room is merged." + currRoom.sectorId);
+			if (!visited[row, col])
+			{
+				visited[row, col] = true;
+				if (currRoom.dimensions.Size != Vector2I.Zero) visitedRooms++;
+
+				// Also mark merge partner if merged
+				if (currRoom.isMerged)
+					visited[currRoom.mergeSectorId.Value.Item1, currRoom.mergeSectorId.Value.Item2] = true;
+			}
+
+			//if (currRoom.dimensions.Size != Vector2I.Zero) visitedRooms++;
+			//if (currRoom.isMerged) //GD.Print("Is merged with: " + currRoom.mergeSectorId);
 			//visited[row, col] = true;
 			// need a way to disntct if ive already counted this room before
 			// dont add merged rooms if you are the merged room?
@@ -98,12 +124,12 @@ public partial class PathGenerator
 					dungeonArray[currRoom.sectorId.Item1, currRoom.sectorId.Item2].dimensions.Size = Vector2I.One;
 				}
 				Connection connection = new Connection(currRoom.sectorId, prevRoomId);
-				
+
 				//Connection testC = new Connection(prevRoomId, currRoom.sectorId);
 
 				if (!dungeonArray[row, col].connections.Contains(prevRoomId))
 				{
-					GD.Print("adding");
+					//GD.Print("Connecting currRoom with previous: " + prevRoomId);
 					paths.Add(connection);
 					dungeonArray[row, col].connections.Add(prevRoomId);
 					dungeonArray[prevRoomId.Item1, prevRoomId.Item2].connections.Add((row, col));
@@ -112,16 +138,29 @@ public partial class PathGenerator
 			}
 
 			List<(Room, (int, int))> possibleNeighbors = getAllPossibleNeighbors(row, col, dungeonArray, visited);
-
+			if (currRoom.isMerged)
+			{
+				possibleNeighbors.AddRange(getAllPossibleNeighbors(currRoom.mergeSectorId.Value.Item1, currRoom.mergeSectorId.Value.Item2, dungeonArray, visited));
+			}
+			possibleNeighbors = possibleNeighbors.OrderByDescending(x => x.Item1.dimensions.Size == Vector2I.Zero).ToList();
 			foreach ((Room, (int, int)) neighbor in possibleNeighbors)
 			{
-				roomStack.Push(neighbor);
+				if (neighbor.Item1.dimensions.Size == Vector2I.Zero)
+				{
+					backupStack.Push(neighbor);
+				}
+				else
+				{
+					roomStack.Push(neighbor);
+				}
+
 			}
-			GD.Print("Visited: " + visitedRooms + " Count: " + roomCount);
+			//GD.Print("");
+			//GD.Print("Visited: " + visitedRooms + " Count: " + roomCount);
 
 
 		}
-		AddExtraConnections(dungeonArray, paths, 0.15); // 15% chance to create a loop
+		//AddExtraConnections(dungeonArray, paths, 0.15); // 15% chance to create a loop
 		return paths;
 	}
 
@@ -308,9 +347,9 @@ public partial class PathGenerator
 		List<(Room, (int, int))> possibleNeighbors = new List<(Room, (int, int))>();
 
 		// Shuffle directions
-		//var dirs = Directions.OrderBy(x => r.Next()).ToList();
-		var dirs = Directions;
-		GD.Print("Neighbors of : " + baseRow + "," + baseCol);
+		var dirs = Directions.OrderBy(x => r.Next()).ToList();
+		//var dirs = Directions;
+		//GD.Print("Neighbors of : " + baseRow + ", " + baseCol + " are: ");
 		foreach (var (dRow, dCol) in dirs)
 		{
 			int dirow = baseRow + dRow;
@@ -321,25 +360,50 @@ public partial class PathGenerator
 			if (visited[dirow, dicol]) continue;
 			int p = dungeonArray[dirow, dicol].dimensions.Size == Vector2I.Zero ? 2 : 1;
 			if (neighbor == dungeonArray[baseRow, baseCol])
-      {
-				GD.Print("Don't add yourself");
+			{
+				//GD.Print("Will not add merged room: " + dirow + ", " + dicol);
 				continue;
-      }
+			}
+			//if (getAllPossibleNeighbors(dirow, dicol, dungeonArray, visited).Count() != 0)
+			//{
+
+			//}
+			//if (neighborsExist(dirow, dicol, dungeonArray, visited))
+			//{
 			possibleNeighbors.Add((neighbor, (baseRow, baseCol)));
-			
+			//}
+
 			if (neighbor.isMerged)
 			{
-				visited[neighbor.mergeSectorId.Value.Item1, neighbor.mergeSectorId.Value.Item2] = true;
-				visited[neighbor.sectorId.Item1, neighbor.sectorId.Item2] = true;
+				//visited[neighbor.mergeSectorId.Value.Item1, neighbor.mergeSectorId.Value.Item2] = true;
+				//visited[neighbor.sectorId.Item1, neighbor.sectorId.Item2] = true;
 			}
-			visited[dirow, dicol] = true;
-			GD.Print("neighbor: " + neighbor.sectorId);
+			//visited[dirow, dicol] = true;
+			//GD.Print("Adding neighbor: " + neighbor.sectorId);
 			//if (neighbor.isMerged) visited[neighbor.mergeSectorId.Value.Item1, neighbor.mergeSectorId.Value.Item2] = true;
 
 
 		}
 		//return possibleNeighbors;
-		return possibleNeighbors.OrderByDescending(x => x.Item1.dimensions.Size == Vector2I.Zero).ToList();
+		return possibleNeighbors;
+	}
+
+	private bool neighborsExist(int baseRow, int baseCol, Room[,] dungeonArray, bool[,] visited)
+	{
+		bool neighbors = false;
+		var dirs = Directions;
+		foreach (var (dRow, dCol) in dirs)
+		{
+			int dirow = baseRow + dRow;
+			int dicol = baseCol + dCol;
+			if (!inBounds(dirow, dicol, dungeonArray)) continue;
+			if (visited[dirow, dicol]) continue;
+			if (dungeonArray[dirow, dicol] == dungeonArray[baseRow, baseCol]) continue;
+			neighbors = true;
+
+		}
+		//GD.Print("Has neighbors: " + neighbors);
+		return neighbors;
 	}
 
 	private void AddExtraConnections(Room[,] dungeonArray, HashSet<Connection> paths, double loopChance = 0.5)
@@ -391,19 +455,19 @@ public partial class PathGenerator
 	private HashSet<Vector2I> connectRooms(HashSet<Vector2I> paths, Vector2I startPoint, Vector2I endPoint)
 	{
 		int step = startPoint.X <= endPoint.X ? 1 : -1;
-		for (int x = startPoint.X; 
-     step > 0 ? x <= endPoint.X : x >= endPoint.X; 
-     x += step)
+		for (int x = startPoint.X;
+		 step > 0 ? x <= endPoint.X : x >= endPoint.X;
+		 x += step)
 		{
-				paths.Add(new Vector2I(x, startPoint.Y));
+			paths.Add(new Vector2I(x, startPoint.Y));
 		}
 
 		step = startPoint.Y <= endPoint.Y ? 1 : -1;
-		for (int y = startPoint.Y; 
-				step > 0 ? y <= endPoint.Y : y >= endPoint.Y; 
+		for (int y = startPoint.Y;
+				step > 0 ? y <= endPoint.Y : y >= endPoint.Y;
 				y += step)
 		{
-				paths.Add(new Vector2I(endPoint.X, y));
+			paths.Add(new Vector2I(endPoint.X, y));
 		}
 
 

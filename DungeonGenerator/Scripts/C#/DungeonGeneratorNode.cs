@@ -3,6 +3,8 @@ using System;
 using RoomClass;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Numerics;
 [Tool]
 // Dungeon Generator Node
 // Calls functions to create rooms, paths, and draw tiles
@@ -37,9 +39,9 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		Room[,] dungeonArray = new Room[rows, cols];
 
 		//Generate all rooms in the dungeon and get number of generated rooms
-		//dungeonArray = roomGenerator.createDungeonRooms(dungeonArray, r, roomDensity, mergeChance);
+		dungeonArray = roomGenerator.createDungeonRooms(dungeonArray, r, roomDensity, mergeChance);
 
-		dungeonArray = generateMock(dungeonArray);
+		//dungeonArray = generateMock(dungeonArray);
 
 		// Create list of all rooms
 		List<Room> roomList = dungeonArray.Cast<Room>().Where(r => r.dimensions.Size != Vector2I.Zero).DistinctBy(r => r.sectorId).ToList();
@@ -71,32 +73,56 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 				dungeonArray[i, j] = new Room((i, j), null, new Rect2I(new Vector2I(sector.Position.X, sector.Position.Y), new Vector2I(5, 5)));
 			}
 		}
+
+		dungeonArray[0, 1].dimensions.Size = Vector2I.Zero;
 		dungeonArray[0, 3].dimensions.Size = Vector2I.Zero;
-		dungeonArray[2, 1].dimensions.Size = Vector2I.Zero;
-		dungeonArray[3, 0].dimensions.Size = Vector2I.Zero;
+		dungeonArray[1, 0].dimensions.Size = Vector2I.Zero;
+		dungeonArray[1, 3].dimensions.Size = Vector2I.Zero;
 		dungeonArray[2, 3].dimensions.Size = Vector2I.Zero;
+
+		dungeonArray[0, 2].isMerged = true;
+		dungeonArray[0, 2].mergeSectorId = (1, 2);
+		dungeonArray[0, 2].dimensions.Size = new Vector2I(5, 30);
+		dungeonArray[1, 2] = dungeonArray[0, 2];
+
+		dungeonArray[2, 1].isMerged = true;
+		dungeonArray[2, 1].mergeSectorId = (1, 1);
+		dungeonArray[2, 1].dimensions.Position = new Vector2I(25, 25);
+		dungeonArray[2, 1].dimensions.Size = new Vector2I(5, 30);
+		dungeonArray[1, 1] = dungeonArray[2, 1];
+
+		dungeonArray[3, 2].isMerged = true;
+		dungeonArray[3, 2].mergeSectorId = (2, 2);
+		dungeonArray[3, 2].dimensions.Position = new Vector2I(50, 50);
+		dungeonArray[3, 2].dimensions.Size = new Vector2I(5, 30);
+		dungeonArray[2, 2] = dungeonArray[3, 2];
+
+		dungeonArray[3, 0].isMerged = true;
+		dungeonArray[3, 0].mergeSectorId = (3, 1);
+		dungeonArray[3, 0].dimensions.Size = new Vector2I(30, 5);
+		dungeonArray[3, 1] = dungeonArray[3, 0];
+
+		/*dungeonArray[0, 2].dimensions.Size = Vector2I.Zero;
+		dungeonArray[1, 0].dimensions.Size = Vector2I.Zero;
+		dungeonArray[2, 0].dimensions.Size = Vector2I.Zero;
+		dungeonArray[2, 2].dimensions.Size = Vector2I.Zero;
+		dungeonArray[3, 0].dimensions.Size = Vector2I.Zero;
+		dungeonArray[3, 1].dimensions.Size = Vector2I.Zero;
 
 		dungeonArray[0, 0].isMerged = true;
 		dungeonArray[0, 0].mergeSectorId = (0, 1);
 		dungeonArray[0, 0].dimensions.Size = new Vector2I(30, 5);
 		dungeonArray[0, 1] = dungeonArray[0, 0];
 
+		dungeonArray[0, 3].isMerged = true;
+		dungeonArray[0, 3].mergeSectorId = (1, 3);
+		dungeonArray[0, 3].dimensions.Size = new Vector2I(5, 30);
+		dungeonArray[1, 3] = dungeonArray[0, 3];
+
 		dungeonArray[3, 2].isMerged = true;
 		dungeonArray[3, 2].mergeSectorId = (3, 3);
 		dungeonArray[3, 2].dimensions.Size = new Vector2I(30, 5);
-		dungeonArray[3, 3] = dungeonArray[3, 2];
-
-		dungeonArray[1, 0].isMerged = true;
-		dungeonArray[1, 0].mergeSectorId = (2, 0);
-		dungeonArray[1, 0].dimensions.Size = new Vector2I(5, 30);
-		dungeonArray[2, 0] = dungeonArray[1, 0];
-
-		dungeonArray[1, 2].isMerged = true;
-		dungeonArray[1, 2].mergeSectorId = (2, 2);
-		dungeonArray[1, 2].dimensions.Size = new Vector2I(5, 30);
-		dungeonArray[2, 2] = dungeonArray[1, 2];
-		
-
+		dungeonArray[3, 3] = dungeonArray[3, 2];*/
 
 		return dungeonArray;
   }

@@ -23,7 +23,6 @@ func drawPaths(pathList) -> void:
 	for pos in pathList:
 		set_cell(Vector2i(pos.x, pos.y), 0, Vector2i(8,0))
 
-
 # Destroys all tiles
 func clearTiles() -> void:
 	clear()
