@@ -3,8 +3,6 @@ using RoomClass;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Numerics;
 
 public struct Connection
 {
@@ -28,7 +26,7 @@ public partial class PathGenerator
 	private static readonly List<(int, int)> Directions = new List<(int, int)> { (0, -1), (1, 0), (-1, 0), (0, 1) };
 	public static Random r = new Random();
 
-	public HashSet<Vector2I> createPaths(Room[,] dungeonArray, Random r, List<Room> roomList)
+	public HashSet<Vector2I> createPaths(Room[,] dungeonArray, List<Room> roomList)
 	{
 		// Set rows and cols
 		int rows = dungeonArray.GetLength(0);
@@ -88,12 +86,12 @@ public partial class PathGenerator
 			{
 
 				(currRoom, prevRoomId) = backupStack.Pop();
-				GD.Print("USING BACKUP: " + currRoom.sectorId);
+				//GD.Print("USING BACKUP: " + currRoom.sectorId);
 			}
 			else
 			{
 				(currRoom, prevRoomId) = roomStack.Pop();
-				GD.Print("USING STACK: " + currRoom.sectorId);
+				//GD.Print("USING STACK: " + currRoom.sectorId);
 			}
 
 			//GD.Print("Current Room: " + currRoom.sectorId);

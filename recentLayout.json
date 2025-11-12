@@ -1,0 +1,1051 @@
+[
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			0,
+			0
+		],
+		"SectorId": [
+			0,
+			0
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			20,
+			0
+		],
+		"SectorId": [
+			0,
+			2
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			30,
+			0
+		],
+		"SectorId": [
+			0,
+			3
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": true,
+		"MergeSectorId": [
+			1,
+			5
+		],
+		"Position": [
+			50,
+			0
+		],
+		"SectorId": [
+			0,
+			5
+		],
+		"Size": [
+			5,
+			15
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			60,
+			0
+		],
+		"SectorId": [
+			0,
+			6
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			70,
+			0
+		],
+		"SectorId": [
+			0,
+			7
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			80,
+			0
+		],
+		"SectorId": [
+			0,
+			8
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			90,
+			0
+		],
+		"SectorId": [
+			0,
+			9
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			0,
+			10
+		],
+		"SectorId": [
+			1,
+			0
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			20,
+			10
+		],
+		"SectorId": [
+			1,
+			2
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			70,
+			10
+		],
+		"SectorId": [
+			1,
+			7
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			80,
+			10
+		],
+		"SectorId": [
+			1,
+			8
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			90,
+			10
+		],
+		"SectorId": [
+			1,
+			9
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			0,
+			20
+		],
+		"SectorId": [
+			2,
+			0
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			10,
+			20
+		],
+		"SectorId": [
+			2,
+			1
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			30,
+			20
+		],
+		"SectorId": [
+			2,
+			3
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			40,
+			20
+		],
+		"SectorId": [
+			2,
+			4
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			70,
+			20
+		],
+		"SectorId": [
+			2,
+			7
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			80,
+			20
+		],
+		"SectorId": [
+			2,
+			8
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			0,
+			30
+		],
+		"SectorId": [
+			3,
+			0
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			10,
+			30
+		],
+		"SectorId": [
+			3,
+			1
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			20,
+			30
+		],
+		"SectorId": [
+			3,
+			2
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			30,
+			30
+		],
+		"SectorId": [
+			3,
+			3
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			60,
+			30
+		],
+		"SectorId": [
+			3,
+			6
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			80,
+			30
+		],
+		"SectorId": [
+			3,
+			8
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			0,
+			40
+		],
+		"SectorId": [
+			4,
+			0
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			10,
+			40
+		],
+		"SectorId": [
+			4,
+			1
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			30,
+			40
+		],
+		"SectorId": [
+			4,
+			3
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			40,
+			40
+		],
+		"SectorId": [
+			4,
+			4
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			50,
+			40
+		],
+		"SectorId": [
+			4,
+			5
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			60,
+			40
+		],
+		"SectorId": [
+			4,
+			6
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			70,
+			40
+		],
+		"SectorId": [
+			4,
+			7
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			80,
+			40
+		],
+		"SectorId": [
+			4,
+			8
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": true,
+		"MergeSectorId": [
+			6,
+			3
+		],
+		"Position": [
+			30,
+			50
+		],
+		"SectorId": [
+			5,
+			3
+		],
+		"Size": [
+			5,
+			15
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			40,
+			50
+		],
+		"SectorId": [
+			5,
+			4
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			50,
+			50
+		],
+		"SectorId": [
+			5,
+			5
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			60,
+			50
+		],
+		"SectorId": [
+			5,
+			6
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			70,
+			50
+		],
+		"SectorId": [
+			5,
+			7
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			80,
+			50
+		],
+		"SectorId": [
+			5,
+			8
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			0,
+			60
+		],
+		"SectorId": [
+			6,
+			0
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			20,
+			60
+		],
+		"SectorId": [
+			6,
+			2
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			60,
+			60
+		],
+		"SectorId": [
+			6,
+			6
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			70,
+			60
+		],
+		"SectorId": [
+			6,
+			7
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			80,
+			60
+		],
+		"SectorId": [
+			6,
+			8
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			90,
+			60
+		],
+		"SectorId": [
+			6,
+			9
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			0,
+			70
+		],
+		"SectorId": [
+			7,
+			0
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			20,
+			70
+		],
+		"SectorId": [
+			7,
+			2
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			40,
+			70
+		],
+		"SectorId": [
+			7,
+			4
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			60,
+			70
+		],
+		"SectorId": [
+			7,
+			6
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			10,
+			80
+		],
+		"SectorId": [
+			8,
+			1
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			20,
+			80
+		],
+		"SectorId": [
+			8,
+			2
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			30,
+			80
+		],
+		"SectorId": [
+			8,
+			3
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			40,
+			80
+		],
+		"SectorId": [
+			8,
+			4
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			50,
+			80
+		],
+		"SectorId": [
+			8,
+			5
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			80,
+			80
+		],
+		"SectorId": [
+			8,
+			8
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": true,
+		"MergeSectorId": [
+			8,
+			9
+		],
+		"Position": [
+			90,
+			80
+		],
+		"SectorId": [
+			9,
+			9
+		],
+		"Size": [
+			5,
+			15
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			10,
+			90
+		],
+		"SectorId": [
+			9,
+			1
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			20,
+			90
+		],
+		"SectorId": [
+			9,
+			2
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			30,
+			90
+		],
+		"SectorId": [
+			9,
+			3
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			50,
+			90
+		],
+		"SectorId": [
+			9,
+			5
+		],
+		"Size": [
+			5,
+			5
+		]
+	},
+	{
+		"Connections": [],
+		"IsAnchor": false,
+		"IsMerged": false,
+		"Position": [
+			70,
+			90
+		],
+		"SectorId": [
+			9,
+			7
+		],
+		"Size": [
+			5,
+			5
+		]
+	}
+]

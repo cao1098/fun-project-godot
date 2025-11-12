@@ -25,7 +25,8 @@ namespace RoomClass{
       this.isMerged = isMerged;
       connections = new HashSet<(int, int)> ();
     }
-    public override string ToString(){
+    public override string ToString()
+    {
       return "Dimensions: " + dimensions + " Id: " + sectorId + " Merged: " + isMerged + " MergedId: " + mergeSectorId;
     }
   }
