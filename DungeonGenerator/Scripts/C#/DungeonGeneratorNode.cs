@@ -37,7 +37,7 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 	{
 		RoomGenerator roomGenerator = new RoomGenerator(dungeonWidth, dungeonHeight, rows, cols);
 		PathGenerator pathGenerator = new PathGenerator();
-		DungeonLoader dungeonLoader = new DungeonLoader(dungeonWidth, dungeonHeight, rows, cols);
+		DungeonLoader dungeonLoader = new DungeonLoader();
 
 		// Create dungeon layout
 		Room[,] dungeonArray = new Room[rows, cols];
@@ -45,7 +45,7 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		// Generate or load rooms
 		if (loadLayout)
 		{
-			dungeonArray = dungeonLoader.readDungeonLayout(File.ReadAllText("recentLayout.json"));
+			dungeonArray = dungeonLoader.readDungeonLayout(File.ReadAllText("recentLayout.json"), rows, cols);
 		}
 		else
 		{
@@ -71,7 +71,7 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
     }
 
 		// Choose to write to file
-		if (saveLayout) dungeonLoader.writeToFile(godotRoomArray, pathArray);
+		if (saveLayout) dungeonLoader.writeToFile(godotRoomArray, pathArray, rows, cols, dungeonHeight, dungeonWidth);
 
 		// Draw dungeon
 		var tileMapLayerNode = GetNode("TileMapLayer");

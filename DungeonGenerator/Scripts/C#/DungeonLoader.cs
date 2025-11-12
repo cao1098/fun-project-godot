@@ -8,19 +8,8 @@ using RoomClass;
 
 public class DungeonLoader
 {
-	public int dungeonWidth;
-	public int dungeonHeight;
-	public int rows;
-	public int cols;
-	public DungeonLoader(int dungeonWidth, int dungeonHeight, int rows, int cols)
-	{
-		this.dungeonWidth = dungeonWidth;
-		this.dungeonHeight = dungeonHeight;
-		this.rows = rows;
-		this.cols = cols;
-	}
   // Write godot room array to json file
-  public void writeToFile(Array<Room> godotRoomArray, Array<Vector2I> pathArray)
+  public void writeToFile(Array<Room> godotRoomArray, Array<Vector2I> pathArray, int rows, int cols, int dungeonHeight, int dungeonWidth)
 	{
 		// WRITE DIMENSIONS
 		var dungeonDimensions = new Dictionary
@@ -69,7 +58,7 @@ public class DungeonLoader
   }
 
 	// Read rooms from json file
-	public Room[,] readDungeonLayout(string dungeonLayout)
+	public Room[,] readDungeonLayout(string dungeonLayout, int rows, int cols)
 	{
 		var parsedDungeonLayout = Json.ParseString(dungeonLayout);
 
