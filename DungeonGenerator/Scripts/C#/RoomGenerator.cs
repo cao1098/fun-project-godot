@@ -167,7 +167,7 @@ public partial class RoomGenerator
     // Debugging purposes
 		foreach (Room room in dungeonArray)
 		{
-			//GD.Print(room.ToString());
+			GD.Print(room.ToString());
 		}
 		GD.Print("Roomcount: " + roomCount);
   }

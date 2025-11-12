@@ -16,12 +16,20 @@ func drawRooms(roomList) -> void:
 				else:
 					set_cell(Vector2i(j,i), 0, Vector2i(8,4))
 
-
-
 # Draws given paths	
 func drawPaths(pathList) -> void:
 	for pos in pathList:
 		set_cell(Vector2i(pos.x, pos.y), 0, Vector2i(8,0))
+
+# Draws dead ends	
+func drawDeadEnds(pathList) -> void:
+	for pos in pathList:
+		set_cell(Vector2i(pos.x, pos.y), 0, Vector2i(13,0))
+
+# Draw extra paths
+func drawExtraPaths(pathList) -> void:
+	for pos in pathList:
+		set_cell(Vector2i(pos.x, pos.y), 0, Vector2i(14,4))
 
 # Destroys all tiles
 func clearTiles() -> void:

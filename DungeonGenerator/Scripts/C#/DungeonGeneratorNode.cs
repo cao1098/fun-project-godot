@@ -18,6 +18,7 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 	[Export] private double roomDensity;
 	[Export] private double anchorDensity;
 	[Export] private double mergeChance;
+	[Export] private double pathVariation;
 	[Export] private bool loadLayout;
 	[Export] private bool saveLayout;
 	[Export] private bool pathLoading;
@@ -46,6 +47,7 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		if (loadLayout)
 		{
 			dungeonArray = dungeonLoader.readDungeonLayout(File.ReadAllText("recentLayout.json"), rows, cols);
+			roomGenerator.printRooms(dungeonArray);
 		}
 		else
 		{
@@ -60,15 +62,23 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 
 		// Generate or load paths
 		var pathArray = new Array<Vector2I>();
+		var deadEndArray = new Array<Vector2I>();
+		var extraPathArray = new Array<Vector2I>();
 		if (pathLoading && loadLayout)
-    {
-      pathArray = dungeonLoader.readPathLayout(File.ReadAllText("recentLayout.json"));
-    }
+		{
+			pathArray = dungeonLoader.readPathLayout(File.ReadAllText("recentLayout.json"));
+		}
 		else
 		{
-			HashSet<Vector2I> paths = pathGenerator.createPaths(dungeonArray, roomList);
+			HashSet<Vector2I> paths = new HashSet<Vector2I>();
+			HashSet<Vector2I> deadEnds = new HashSet<Vector2I>();
+			HashSet<Vector2I> extraPaths = new HashSet<Vector2I>();
+			(paths, deadEnds, extraPaths) = pathGenerator.createPaths(dungeonArray, roomList, pathVariation);
 			pathArray = new Array<Vector2I>(paths);
-    }
+			deadEndArray = new Array<Vector2I>(deadEnds);
+			extraPathArray = new Array<Vector2I>(extraPaths);
+		}
+		
 
 		// Choose to write to file
 		if (saveLayout) dungeonLoader.writeToFile(godotRoomArray, pathArray, rows, cols, dungeonHeight, dungeonWidth);
@@ -77,6 +87,8 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		var tileMapLayerNode = GetNode("TileMapLayer");
 		tileMapLayerNode.Call("drawRooms", godotRoomArray);
 		tileMapLayerNode.Call("drawPaths", pathArray);
+		tileMapLayerNode.Call("drawDeadEnds", deadEndArray);
+		tileMapLayerNode.Call("drawExtraPaths", extraPathArray);
 	}
 
   //Clear dungeon
