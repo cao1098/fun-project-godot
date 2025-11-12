@@ -20,6 +20,7 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 	[Export] private double mergeChance;
 	[Export] private bool loadLayout;
 	[Export] private bool saveLayout;
+	[Export] private bool pathLoading;
 
 	public override void _Ready()
 	{
@@ -34,45 +35,43 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 	//Create dungeon
 	protected override void generateDungeon()
 	{
-		RoomGenerator roomGenerator = new RoomGenerator(dungeonWidth, dungeonHeight);
+		RoomGenerator roomGenerator = new RoomGenerator(dungeonWidth, dungeonHeight, rows, cols);
 		PathGenerator pathGenerator = new PathGenerator();
-		DungeonLoader dungeonLoader = new DungeonLoader();
+		DungeonLoader dungeonLoader = new DungeonLoader(dungeonWidth, dungeonHeight, rows, cols);
 
-		// Create arrays to hold rooms and paths
-		var godotRoomArray = new Array<Room>();
-		var pathArray = new Array<Vector2I>();
+		// Create dungeon layout
+		Room[,] dungeonArray = new Room[rows, cols];
 
+		// Generate or load rooms
 		if (loadLayout)
 		{
-			// Load rooms from file
-			godotRoomArray = dungeonLoader.readDungeonLayout(File.ReadAllText("recentLayout.json"));
-
-			// Load paths from file
+			dungeonArray = dungeonLoader.readDungeonLayout(File.ReadAllText("recentLayout.json"));
 		}
 		else
 		{
-			// Create dungeon layout
-			Room[,] dungeonArray = new Room[rows, cols];
-
-			// Generall all rooms in dungeon
 			dungeonArray = roomGenerator.createDungeonRooms(dungeonArray, roomDensity, mergeChance);
-
-			// Create list of all rooms to be drawn in dungeon
-			List<Room> roomList = dungeonArray.Cast<Room>().Where(r => r.dimensions.Size != Vector2I.Zero).DistinctBy(r => r.sectorId).ToList();
-
-			// Convert to godot array
-			godotRoomArray = new Array<Room>(roomList);
-
-			// Generate all paths
-			HashSet<Vector2I> paths = pathGenerator.createPaths(dungeonArray, roomList);
-
-			// Convert to godot array
-			pathArray = new Array<Vector2I>(paths);
-
-			// Choose to write to file
-			if (saveLayout) dungeonLoader.writeToFile(godotRoomArray);
-
 		}
+
+		// Create list of all rooms to be drawn in dungeon
+		List<Room> roomList = dungeonArray.Cast<Room>().Where(r => r.dimensions.Size != Vector2I.Zero).DistinctBy(r => r.sectorId).ToList();
+
+		// Convert to godot array
+		var godotRoomArray = new Array<Room>(roomList);
+
+		// Generate or load paths
+		var pathArray = new Array<Vector2I>();
+		if (pathLoading && loadLayout)
+    {
+      pathArray = dungeonLoader.readPathLayout(File.ReadAllText("recentLayout.json"));
+    }
+		else
+		{
+			HashSet<Vector2I> paths = pathGenerator.createPaths(dungeonArray, roomList);
+			pathArray = new Array<Vector2I>(paths);
+    }
+
+		// Choose to write to file
+		if (saveLayout) dungeonLoader.writeToFile(godotRoomArray, pathArray);
 
 		// Draw dungeon
 		var tileMapLayerNode = GetNode("TileMapLayer");

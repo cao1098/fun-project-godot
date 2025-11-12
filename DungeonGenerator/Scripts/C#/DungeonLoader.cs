@@ -1,40 +1,82 @@
+using System.Data;
 using System.IO;
 using Godot;
 using Godot.Collections;
 using RoomClass;
 
+
+
 public class DungeonLoader
 {
+	public int dungeonWidth;
+	public int dungeonHeight;
+	public int rows;
+	public int cols;
+	public DungeonLoader(int dungeonWidth, int dungeonHeight, int rows, int cols)
+	{
+		this.dungeonWidth = dungeonWidth;
+		this.dungeonHeight = dungeonHeight;
+		this.rows = rows;
+		this.cols = cols;
+	}
   // Write godot room array to json file
-  public void writeToFile(Array<Room> godotRoomArray)
-  {
-    var roomDictionaryArray = new Godot.Collections.Array();
-    foreach (Room room in godotRoomArray)
-    {
-      var godotDict = new Dictionary
-      {
-        { "Position", new int[]{room.dimensions.Position[0],  room.dimensions.Position[1]} }, // Vector2I
+  public void writeToFile(Array<Room> godotRoomArray, Array<Vector2I> pathArray)
+	{
+		// WRITE DIMENSIONS
+		var dungeonDimensions = new Dictionary
+		{
+			{"Rows", rows},
+			{"Cols", cols},
+	 		{"Height", dungeonHeight},
+			{"Width", dungeonWidth},
+		};
+		
+		// WRITE ROOMS
+    var roomDictionaryArray = new Array();
+		foreach (Room room in godotRoomArray)
+		{
+			var godotDict = new Dictionary
+			{
+				{ "Position", new int[]{room.dimensions.Position[0],  room.dimensions.Position[1]} }, // Vector2I
 				{ "Size", new int[]{room.dimensions.Size[0], room.dimensions.Size[1]} },
-        { "SectorId", new int[]{room.sectorId.Item1, room.sectorId.Item2} },
-        { "IsMerged", room.isMerged },
-        { "IsAnchor", room.isAnchor }
-      };
-      if (room.mergeSectorId != null)
-      {
-        godotDict["MergeSectorId"] = new int[] { room.mergeSectorId.Value.Item1, room.mergeSectorId.Value.Item2 };
-      }
-      roomDictionaryArray.Add(godotDict);
+				{ "SectorId", new int[]{room.sectorId.Item1, room.sectorId.Item2} },
+				{ "IsMerged", room.isMerged },
+				{ "IsAnchor", room.isAnchor }
+			};
+			if (room.mergeSectorId != null)
+			{
+				godotDict["MergeSectorId"] = new int[] { room.mergeSectorId.Value.Item1, room.mergeSectorId.Value.Item2 };
+			}
+			roomDictionaryArray.Add(godotDict);
+		}
+
+		// WRITE PATHS
+		var jsonPathArray = new Array<int[]>();
+		foreach(Vector2I path in pathArray)
+    {
+			jsonPathArray.Add(new int[] { path[0], path[1] });
     }
-    var json = Json.Stringify(roomDictionaryArray, "\t");
+
+		var dungeonData = new Dictionary
+		{
+			{"Dungeon", dungeonDimensions},
+			{"Rooms", roomDictionaryArray},
+			{"Paths", jsonPathArray}
+		};
+
+		var json = Json.Stringify(dungeonData, "\t");
     File.WriteAllText("recentLayout.json", json);
   }
-  
-  // Read rooms from json file
-	public Array<Room> readDungeonLayout(string dungeonLayout)
+
+	// Read rooms from json file
+	public Room[,] readDungeonLayout(string dungeonLayout)
 	{
 		var parsedDungeonLayout = Json.ParseString(dungeonLayout);
-		Array<Room> godotRoomArray = new Array<Room>();
-		foreach (Dictionary roomData in (Godot.Collections.Array)parsedDungeonLayout)
+
+		// LOAD ROOMS
+		var dungeonLayoutDict = ((Dictionary)parsedDungeonLayout)["Rooms"];
+		Room[,] dungeonArray = new Room[rows, cols];
+		foreach (Dictionary roomData in (Array)dungeonLayoutDict)
 		{
 			int[] position = roomData["Position"].AsInt32Array();
 			int[] size = roomData["Size"].AsInt32Array();
@@ -53,10 +95,49 @@ public class DungeonLoader
 
 			Room room = new Room(sectorId, mergeSectorId, dimensions, isMerged, isAnchor);
 
-			godotRoomArray.Add(room);
+			dungeonArray[sectorId.Item1, sectorId.Item2] = room;
 		}
 
-		return godotRoomArray;
+		// LOAD DIMENSIONS
+		var dimensionsDict = (Dictionary)((Dictionary)parsedDungeonLayout)["Dungeon"];
+		int lCols = dimensionsDict["Cols"].AsInt32();
+		int lRows = dimensionsDict["Rows"].AsInt32();
+		int lWidth = dimensionsDict["Width"].AsInt32();
+		int lHeight = dimensionsDict["Height"].AsInt32(); ;
+
+		int sectorWidth = lWidth / lCols;
+		int sectorHeight = lHeight / lRows;
+
+		for (int i = 0; i < lRows; i++)
+		{
+			for (int j = 0; j < lCols; j++)
+			{
+				if (dungeonArray[i, j] == null)
+				{
+					Rect2I sector = new Rect2I(new Vector2I(j * sectorWidth, i * sectorHeight), new Vector2I(sectorWidth, sectorHeight));
+					Room room = new Room((i, j), null, new Rect2I(new Vector2I(sector.Position.X, sector.Position.Y), Vector2I.Zero));
+					dungeonArray[i, j] = room;
+				}
+			}
+		}
+
+		return dungeonArray;
 	}
-  
+
+	public Array<Vector2I> readPathLayout(string dungeonLayout)
+	{
+		var parsedDungeonLayout = Json.ParseString(dungeonLayout);
+		var pathArray = new Array<Vector2I>();
+
+		// LOAD PATHS
+		var dungeonPathDict = ((Dictionary)parsedDungeonLayout)["Paths"];
+		foreach (var pathVar in (Array)dungeonPathDict)
+		{
+			int[] coords = pathVar.AsInt32Array();
+			Vector2I path = new Vector2I(coords[0], coords[1]);
+			pathArray.Add(path);
+		}
+		
+		return pathArray;
+  }
 }

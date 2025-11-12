@@ -10,6 +10,8 @@ public partial class RoomGenerator
 	public static int roomCount;
 	public int dungeonWidth;
 	public int dungeonHeight;
+	public int rows;
+	public int cols;
 	const int minRoomHeight = 4;
 	const int minRoomWidth = 4;
 	public static Random r = new Random();
@@ -17,18 +19,16 @@ public partial class RoomGenerator
 	
 
 
-	public RoomGenerator(int dungeonWidth, int dungeonHeight)
+	public RoomGenerator(int dungeonWidth, int dungeonHeight, int rows, int cols)
 	{
 		this.dungeonWidth = dungeonWidth;
 		this.dungeonHeight = dungeonHeight;
+		this.rows = rows;
+		this.cols = cols;
 	}
 
 	public Room[,] createDungeonRooms(Room[,] dungeonArray, double roomDensity, double mergeChance)
 	{
-		// Get rows and cols from dungeonArray
-		int rows = dungeonArray.GetLength(0);
-		int cols = dungeonArray.GetLength(1);
-
 		// Keep track of iterations & roomCount
 		int iterations = 0;
 
