@@ -70,7 +70,7 @@ public partial class PathGenerator
 			// Get the current room, either off of the roomStack or backupStack
 			if(roomStack.Count == 0)
       {
-        GD.Print("Backup");
+        //GD.Print("Backup");
       }
 			(Room currRoom, (int, int) prevRoomId) = roomStack.Count == 0 ? backupStack.Pop() : roomStack.Pop();
 			int row = currRoom.sectorId.Item1;
@@ -104,7 +104,7 @@ public partial class PathGenerator
 					paths.Add(connection);
 					dungeonArray[row, col].connections.Add(prevRoomId);
 					dungeonArray[prevRoomId.Item1, prevRoomId.Item2].connections.Add((row, col));
-					GD.Print("Connecting: " + currRoom.sectorId + " and " + prevRoomId);
+					//GD.Print("Connecting: " + currRoom.sectorId + " and " + prevRoomId);
 				}
 				
 
@@ -151,6 +151,12 @@ public partial class PathGenerator
 
 
 		}
+		if(dungeonArray[currRoom.sectorId.Item1, currRoom.sectorId.Item2].dimensions.Size != Vector2I.Zero &&
+		dungeonArray[currRoom.sectorId.Item1, currRoom.sectorId.Item2].dimensions.Size != Vector2I.One)
+    {
+			GD.Print(currRoom.sectorId + " is a room so not deadend");
+      isDeadend = false;
+    }
 		if (isDeadend)
     {
 			GD.Print(currRoom.sectorId + " is dead end");
