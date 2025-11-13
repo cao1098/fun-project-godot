@@ -85,6 +85,10 @@ public class DungeonLoader
 			Room room = new Room(sectorId, mergeSectorId, dimensions, isMerged, isAnchor);
 
 			dungeonArray[sectorId.Item1, sectorId.Item2] = room;
+      if (room.isMerged)
+      {
+        dungeonArray[mergeSectorId.Value.Item1, mergeSectorId.Value.Item2] = room;
+      }
 		}
 
 		// LOAD DIMENSIONS

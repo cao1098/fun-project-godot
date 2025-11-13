@@ -23,22 +23,16 @@ public partial class PathGenerator
 
 	public HashSet<Vector2I> createPaths(Room[,] dungeonArray, List<Room> roomList, double pathVariation)
 	{
-		// Set rows and cols
-		int rows = dungeonArray.GetLength(0);
-		int cols = dungeonArray.GetLength(1);
-
 		// Get number of mandatory rooms
 		int roomCount = roomList.Count;
 
 		// Create space to hold all path tiles
 		HashSet<Vector2I> pathTiles = new HashSet<Vector2I>();
-		//HashSet<Vector2I> deadEnds = new HashSet<Vector2I>();
-		//HashSet<Vector2I> extraPaths = new HashSet<Vector2I>();
 
 		if (roomCount > 1)
 		{
 			HashSet<Connection> paths = new HashSet<Connection>();
-			paths= testPaths(dungeonArray, rows, cols, roomList, roomCount, pathVariation);
+			paths= generatePaths(dungeonArray, roomList, roomCount, pathVariation);
 
 			// Convert to actual path tiles
 			foreach (Connection path in paths)
@@ -50,8 +44,12 @@ public partial class PathGenerator
 		return pathTiles;
 	}
 
-	private HashSet<Connection> testPaths(Room[,] dungeonArray, int rows, int cols, List<Room> roomList, int roomCount, double pathVariation)
+	private HashSet<Connection> generatePaths(Room[,] dungeonArray, List<Room> roomList, int roomCount, double pathVariation)
 	{
+		// Set rows & cols
+		int rows = dungeonArray.GetLength(0);
+		int cols = dungeonArray.GetLength(1);
+
 		// Keep track of paths and visited rooms
 		HashSet<Connection> paths = new HashSet<Connection>();
 		bool[,] visited = new bool[rows, cols];
@@ -62,21 +60,19 @@ public partial class PathGenerator
 		int visitedRooms = 0;
 
 		// Identify & push first room
-		Room first = roomList[r.Next(roomList.Count)];
+		//Room first = roomList[r.Next(roomList.Count)];
+		Room first = roomList[7];
+		GD.Print("Start: " + first.sectorId);
 		roomStack.Push((first, first.sectorId));
 
 		while ((roomStack.Count + backupStack.Count) > 0 && visitedRooms != roomCount)
 		{
-			Room currRoom;
-			(int, int) prevRoomId;
-			if (roomStack.Count == 0)
-			{
-				(currRoom, prevRoomId) = backupStack.Pop();
-			}
-			else
-			{
-				(currRoom, prevRoomId) = roomStack.Pop();
-			}
+			// Get the current room, either off of the roomStack or backupStack
+			if(roomStack.Count == 0)
+      {
+        GD.Print("Backup");
+      }
+			(Room currRoom, (int, int) prevRoomId) = roomStack.Count == 0 ? backupStack.Pop() : roomStack.Pop();
 			int row = currRoom.sectorId.Item1;
 			int col = currRoom.sectorId.Item2;
 
@@ -101,12 +97,14 @@ public partial class PathGenerator
 				Connection connection = new Connection(currRoom.sectorId, prevRoomId);
 				bool deadend = canConnectToNeighbors(currRoom, dungeonArray, visited);
 				// deadends off rn
+				//deadend = false;
 
 				if (!dungeonArray[row, col].connections.Contains(prevRoomId) && !deadend)
 				{
 					paths.Add(connection);
 					dungeonArray[row, col].connections.Add(prevRoomId);
 					dungeonArray[prevRoomId.Item1, prevRoomId.Item2].connections.Add((row, col));
+					GD.Print("Connecting: " + currRoom.sectorId + " and " + prevRoomId);
 				}
 				
 
