@@ -71,12 +71,9 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		else
 		{
 			HashSet<Vector2I> paths = new HashSet<Vector2I>();
-			HashSet<Vector2I> deadEnds = new HashSet<Vector2I>();
-			HashSet<Vector2I> extraPaths = new HashSet<Vector2I>();
-			(paths, deadEnds, extraPaths) = pathGenerator.createPaths(dungeonArray, roomList, pathVariation);
+			paths = pathGenerator.createPaths(dungeonArray, roomList, pathVariation);
 			pathArray = new Array<Vector2I>(paths);
-			deadEndArray = new Array<Vector2I>(deadEnds);
-			extraPathArray = new Array<Vector2I>(extraPaths);
+
 		}
 		
 
@@ -87,8 +84,6 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		var tileMapLayerNode = GetNode("TileMapLayer");
 		tileMapLayerNode.Call("drawRooms", godotRoomArray);
 		tileMapLayerNode.Call("drawPaths", pathArray);
-		tileMapLayerNode.Call("drawDeadEnds", deadEndArray);
-		tileMapLayerNode.Call("drawExtraPaths", extraPathArray);
 	}
 
   //Clear dungeon
