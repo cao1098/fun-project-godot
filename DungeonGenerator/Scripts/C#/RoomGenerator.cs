@@ -66,6 +66,7 @@ public partial class RoomGenerator
 		}
 
 		// Determine if layout is eligible for merging or if it needs to be reworked
+		// TODO: Replace the iteration system with a fallback system, maybe
 		if (roomCount > 2)
 		{
 			roomMerging(rows, cols, dungeonArray, mergeChance);
@@ -167,7 +168,9 @@ public partial class RoomGenerator
     // Debugging purposes
 		foreach (Room room in dungeonArray)
 		{
-			GD.Print(room.ToString());
+			if(room != null){
+				GD.Print(room.ToString());
+			}
 		}
 		GD.Print("Roomcount: " + roomCount);
   }
