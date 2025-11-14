@@ -60,8 +60,8 @@ public partial class PathGenerator
 		int visitedRooms = 0;
 
 		// Select & push first room
-		Room first = roomList[r.Next(roomList.Count)];
-		//first = roomList[7];
+		//Room first = roomList[r.Next(roomList.Count)];
+		Room first = roomList[0];
 		roomStack.Push((first, first.sectorId));
 
 		while ((roomStack.Count + backupStack.Count) > 0 && visitedRooms != roomCount)
@@ -192,7 +192,6 @@ public partial class PathGenerator
 						if (r.NextDouble() < pathVariation)
 						{
 							if (neighbor.dimensions.Size == Vector2I.Zero) neighbor.dimensions.Size = Vector2I.One;
-							// TODO: add func for this perhaps
 							paths.Add(connection);
 							dungeonArray[curr.sectorId.Item1, curr.sectorId.Item2].connections.Add(neighbor.sectorId);
 							dungeonArray[neighbor.sectorId.Item1, neighbor.sectorId.Item2].connections.Add((curr.sectorId.Item1, curr.sectorId.Item2));
@@ -202,6 +201,7 @@ public partial class PathGenerator
 			}
 		}
 	}
+
 
 	// TODO: fix this idk whats going on
 	private HashSet<Vector2I> connectRooms(HashSet<Vector2I> paths, Vector2I startPoint, Vector2I endPoint)
