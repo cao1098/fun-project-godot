@@ -66,39 +66,48 @@ public partial class RoomGenerator
 		}
 
 		// Determine if layout is eligible for merging or if it needs to be reworked
-		// TODO: Replace the iteration system with a fallback system, maybe
 		if (roomCount > 2)
 		{
 			roomMerging(rows, cols, dungeonArray, mergeChance);
 		}
 		else if (roomCount < 2)
 		{
-			if (iterations < 10)
-			{
-				dungeonArray = generateRooms(rows, cols, new Room[rows, cols], ++iterations, roomDensity, mergeChance);
-			}
-			else
-			{
-				dungeonArray = new Room[rows, cols];
-				Rect2I sector1 = new Rect2I(new Vector2I(0 * sectorWidth, 0 * sectorHeight), new Vector2I(sectorWidth, sectorHeight));
-				Room dungeonRoom = new Room((0, 0), null, new Rect2I(new Vector2I(sector1.Position.X, sector1.Position.Y), new Vector2I(dungeonWidth, dungeonHeight)), true);
-				for (int i = 0; i < rows; i++)
-				{
-					for (int j = 0; j < cols; j++)
-					{
-						dungeonArray[i, j] = dungeonRoom;
-					}
-				}
-				roomCount = 1;
-				return dungeonArray;
-
-			}
+			dungeonArray = createDefaultDungeon(dungeonArray, rows, cols, sectorHeight, sectorWidth);
+			roomCount = 2;
+			return dungeonArray;
 		}
 		return dungeonArray;
 	}
 
-	// Creates a room according to the specified parameters, empty rooms will be of size 0,0
-	public Room createRoom(Rect2I sector, int i, int j, double roomDensity)
+  private Room[,] createDefaultDungeon(Room[,] dungeonArray, int rows, int cols, int sectorHeight, int sectorWidth)
+  {
+		//dungeonArray = new Room[rows, cols];
+		
+    for(int i = 0; i < rows; i++)
+		{
+			for(int j = 0; j < cols; j++)
+			{
+				Rect2I defaultDimensions = new Rect2I(new Vector2I(j * sectorWidth, i * sectorHeight), Vector2I.Zero);
+				dungeonArray[i, j] = new Room((i, j), null, defaultDimensions);
+			}
+		}
+
+		(int r1, int c1) = (r.Next(rows), r.Next(cols));
+    (int r2, int c2) = (r.Next(rows), r.Next(cols));
+		
+		// In case of selecting same room
+		if (r1 == r2 && c1 == c2)
+    {
+      c2 = (c2 + 1) % cols;
+    }
+		dungeonArray[r1, c1].dimensions.Size = new Vector2I(5, 5);
+		dungeonArray[r2, c2].dimensions.Size = new Vector2I(5, 5);
+		
+		return dungeonArray;
+  }
+
+  // Creates a room according to the specified parameters, empty rooms will be of size 0,0
+  public Room createRoom(Rect2I sector, int i, int j, double roomDensity)
 	{
 		Room room;
 		if (r.NextDouble() < roomDensity)
@@ -169,10 +178,10 @@ public partial class RoomGenerator
 		foreach (Room room in dungeonArray)
 		{
 			if(room != null){
-				GD.Print(room.ToString());
+				//GD.Print(room.ToString());
 			}
 		}
-		GD.Print("Roomcount: " + roomCount);
+		//GD.Print("Roomcount: " + roomCount);
   }
 	
 }
