@@ -2,6 +2,7 @@ using Godot;
 using RoomClass;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 public struct Connection
@@ -37,6 +38,7 @@ public partial class PathGenerator
 			// Convert to actual path tiles
 			foreach (Connection path in paths)
 			{
+				GD.Print("sector1 size: " + dungeonArray[path.roomID.Item1, path.roomID.Item2].dimensions.Size + " sector2 size: " + dungeonArray[path.previousID.Item1, path.previousID.Item2].dimensions.Size);
 				pathTiles = connectRooms(pathTiles, dungeonArray[path.roomID.Item1, path.roomID.Item2].dimensions.GetCenter(), dungeonArray[path.previousID.Item1, path.previousID.Item2].dimensions.GetCenter());
 			}
 		}
@@ -73,6 +75,7 @@ public partial class PathGenerator
 
 			if (visited[row, col]) continue;
 
+			// Mark as visited and add to visited rooms if required
 			visited[row, col] = true;
 			if (currRoom.dimensions.Size != Vector2I.Zero) visitedRooms++;
 			if (currRoom.isMerged) visited[currRoom.mergeSectorId.Value.Item1, currRoom.mergeSectorId.Value.Item2] = true;
@@ -86,11 +89,8 @@ public partial class PathGenerator
 				}
 
 				Connection connection = new Connection(currRoom.sectorId, prevRoomId);
-				bool deadend = canConnectToNeighbors(currRoom, dungeonArray, visited);
-				// TODO: Figure out what you want to do with deadends
-				//deadend = false;
 
-				if (!dungeonArray[row, col].connections.Contains(prevRoomId) && !deadend)
+				if (!dungeonArray[row, col].connections.Contains(prevRoomId) && !pruneDeadEnd(currRoom, dungeonArray, visited))
 				{
 					paths.Add(connection);
 					dungeonArray[row, col].connections.Add(prevRoomId);
@@ -120,13 +120,12 @@ public partial class PathGenerator
 			}
 		}
 		// Add additional paths
-		AddExtraConnections(dungeonArray, paths, pathVariation);
+		addExtraConnections(dungeonArray, paths, pathVariation);
 		return paths;
 	}
 
   // Check if there are any surrounding neighbors that are unvisited
-	// TODO: is this really needed
-  private bool canConnectToNeighbors(Room currRoom, Room[,] dungeonArray, bool[,] visited)
+  private bool pruneDeadEnd(Room currRoom, Room[,] dungeonArray, bool[,] visited)
 	{
 		bool isDeadend = true;
 		var dirs = Directions;
@@ -168,7 +167,7 @@ public partial class PathGenerator
 		return possibleNeighbors;
 	}
 
-	private void AddExtraConnections(Room[,] dungeonArray, HashSet<Connection> paths, double pathVariation)
+	private void addExtraConnections(Room[,] dungeonArray, HashSet<Connection> paths, double pathVariation)
 	{
 		int rows = dungeonArray.GetLength(0);
 		int cols = dungeonArray.GetLength(1);
@@ -191,7 +190,6 @@ public partial class PathGenerator
 					{
 						if (r.NextDouble() < pathVariation)
 						{
-							if (neighbor.dimensions.Size == Vector2I.Zero) neighbor.dimensions.Size = Vector2I.One;
 							paths.Add(connection);
 							dungeonArray[curr.sectorId.Item1, curr.sectorId.Item2].connections.Add(neighbor.sectorId);
 							dungeonArray[neighbor.sectorId.Item1, neighbor.sectorId.Item2].connections.Add((curr.sectorId.Item1, curr.sectorId.Item2));
@@ -203,25 +201,26 @@ public partial class PathGenerator
 	}
 
 
-	// TODO: fix this idk whats going on
+
+	// Creates the tiles for path connecting two rooms
 	private HashSet<Vector2I> connectRooms(HashSet<Vector2I> paths, Vector2I startPoint, Vector2I endPoint)
 	{
 		int step = startPoint.X <= endPoint.X ? 1 : -1;
-		for (int x = startPoint.X;
-		 step > 0 ? x <= endPoint.X : x >= endPoint.X;
-		 x += step)
+		for (int x = startPoint.X; x != endPoint.X; x += step)
 		{
-			paths.Add(new Vector2I(x, startPoint.Y));
+			Vector2I pos = new Vector2I(x, startPoint.Y);
+			paths.Add(pos);
 		}
 
 		step = startPoint.Y <= endPoint.Y ? 1 : -1;
-		for (int y = startPoint.Y;
-				step > 0 ? y <= endPoint.Y : y >= endPoint.Y;
-				y += step)
+		for (int y = startPoint.Y; y != endPoint.Y; y += step)
 		{
-			paths.Add(new Vector2I(endPoint.X, y));
+			Vector2I pos = new Vector2I(endPoint.X, y);
+			paths.Add(pos);
 		}
 
+		paths.Add(startPoint);
+		paths.Add(endPoint);
 
 		return paths;
 	}

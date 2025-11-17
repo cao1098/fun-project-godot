@@ -33,6 +33,15 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 		generateDungeon();
 	}
 
+
+	/* TODO
+	- Clean up path generator, decide if its worth checking for deadends or not
+	- Clean up the way path generator draws
+	- Implement isAnchor functionality, set is anchor to whatever but dont add it to roomcount, also anchor rooms to be passed into the path generator but remove them when using for any other functionality
+	- Room generator add variation to sizes of the room
+	- Path generator add variation to the paths themself.  Select 0-2 checkpoints within your sector and the sector you're merging with, hit those checkpoints on the path
+	*/
+
 	//Create dungeon
 	protected override void generateDungeon()
 	{
@@ -62,8 +71,6 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 
 		// Generate or load paths
 		var pathArray = new Array<Vector2I>();
-		var deadEndArray = new Array<Vector2I>();
-		var extraPathArray = new Array<Vector2I>();
 		if (pathLoading && loadLayout)
 		{
 			pathArray = dungeonLoader.readPathLayout(File.ReadAllText("recentLayout.json"));
@@ -76,7 +83,6 @@ public partial class DungeonGeneratorNode : AbstractDungeonGenerator
 
 		}
 		
-
 		// Choose to write to file
 		if (saveLayout) dungeonLoader.writeToFile(godotRoomArray, pathArray, rows, cols, dungeonHeight, dungeonWidth);
 
